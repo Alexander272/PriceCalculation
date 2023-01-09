@@ -40,6 +40,14 @@ func Infof(format string, args ...interface{}) {
 	logrus.Infof(format, args...)
 }
 
+func Warn(msg ...interface{}) {
+	logrus.Warn(msg...)
+}
+
+func Warnf(format string, args ...interface{}) {
+	logrus.Warnf(format, args...)
+}
+
 func Error(msg ...interface{}) {
 	logrus.Error(msg...)
 }
