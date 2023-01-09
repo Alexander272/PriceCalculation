@@ -5,7 +5,6 @@ import { Container } from './formulas.style'
 export default function Formulas() {
 	return (
 		<Container>
-			Formulas
 			<FormulaField />
 		</Container>
 	)

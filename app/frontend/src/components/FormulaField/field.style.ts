@@ -2,32 +2,34 @@ import styled, { keyframes } from 'styled-components'
 import { FormulaPartType } from '../../types/formula'
 
 export const Container = styled.div`
-	padding: 8px 16px;
+	padding: 8px 8px;
 	border: 2px solid var(--secondary-color);
 	border-radius: 16px;
 	flex-grow: 1;
 	width: 700px;
-	min-height: 200px;
+	/* min-height: 200px; */
 	cursor: text;
+	position: relative;
+`
+
+export const Title = styled.input`
+	border: none;
+	outline: none;
+	font-size: 18px;
+	width: 100%;
+	padding: 0 8px 6px;
+	border-bottom: 1px solid var(--secondary-color);
 `
 
 export const Formula = styled.p`
-	display: flex;
-	align-items: center;
-	display: inline-block;
+	margin-top: 6px;
+	padding: 0 8px;
 	word-break: break-all;
-	outline: none;
 `
 
 export const Input = styled.input`
-	border: none;
-	outline: none;
-	display: inline-block;
-	background-color: transparent;
-	width: 10px;
-	/* width: 1px; */
-	/* overflow: hidden; */
-	/* color: transparent; */
+	position: absolute;
+	opacity: 0;
 `
 
 const blink = keyframes`
@@ -49,8 +51,7 @@ export const Symbol = styled.span<SymbolProps>`
 	font-weight: 500;
 	position: relative;
 	/* color: #fff; */
-	padding: ${props => (props.type === 'numeric' ? 0 : props.type === 'field' ? '0 3px' : '0 8px 0 5px')};
-	margin-right: ${props => (props.type === 'field' ? '3px' : 0)};
+	padding: ${props => (props.type === 'numeric' ? 0 : props.type === 'field' ? '0 5px' : '0 8px')};
 	background-color: ${props => (props.type === 'field' ? '#9dc4ff' : 'inherit')};
 	border-radius: 3px;
 	text-align: center;

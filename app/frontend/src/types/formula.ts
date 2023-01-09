@@ -4,4 +4,5 @@ export interface IFormulaParts {
 	id: number
 	type: FormulaPartType
 	value: string
+	description?: string
 }
