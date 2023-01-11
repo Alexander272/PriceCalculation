@@ -5,4 +5,5 @@ export const Wrapper = styled.div`
 	max-width: 1200px;
 	min-width: 320px;
 	flex-grow: 1;
+	width: 100%;
 `

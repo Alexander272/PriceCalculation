@@ -1,6 +1,7 @@
 import { FC, Fragment, KeyboardEvent, MouseEvent, useEffect, useRef, useState } from 'react'
 import { IFormulaParts } from '../../types/formula'
 import { Formula, Input, Symbol } from './field.style'
+import { Calculate } from '../../../wailsjs/go/main/App'
 
 type Props = {
 	initParts: IFormulaParts[]
@@ -26,7 +27,25 @@ export const Field: FC<Props> = ({ initParts = [] }) => {
 		setActiveIndex(+((event.target as HTMLDivElement).dataset?.index || parts.length - 1))
 	}
 
-	const changePartsHandler = (event: KeyboardEvent<HTMLInputElement>) => {
+	const changePartsHandler = async (event: KeyboardEvent<HTMLInputElement>) => {
+		if (event.key === 'Enter') {
+			let formula = ''
+			let params: any[] = []
+			parts.forEach(p => {
+				formula += p.value
+				if (p.type === 'field') {
+					params.push({
+						Id: p.id.toString(),
+						Name: p.value,
+					})
+				}
+			})
+
+			const result = await Calculate({ Formula: formula, Params: params })
+			console.log(result)
+			return
+		}
+
 		if (event.key === 'ArrowLeft') {
 			setActiveIndex(prev => (prev > -1 ? prev - 1 : -1))
 			return
@@ -66,6 +85,7 @@ export const Field: FC<Props> = ({ initParts = [] }) => {
 		if (new RegExp(/^[a-zA-Z]$/).test(event.key)) {
 			part.type = 'field'
 			part.value = event.key.toUpperCase()
+			// TODO дописать получение описания
 			part.description = 'Описание'
 			if (activeIndex >= 0 && parts[activeIndex].type === 'field') {
 				let newParts = [...parts]

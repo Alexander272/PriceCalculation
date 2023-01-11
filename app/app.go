@@ -2,20 +2,24 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"price_calculation/internal/configs"
+
+	"github.com/Alexander272/price_calculation/internal/configs"
+	"github.com/Alexander272/price_calculation/internal/services"
+	"github.com/Alexander272/price_calculation/models"
 )
 
 // App struct
 type App struct {
-	ctx    context.Context
-	config configs.Config
+	ctx      context.Context
+	config   configs.Config
+	services *services.Services
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
 	return &App{
-		config: *configs.Init(),
+		config:   *configs.Init(),
+		services: services.NewService(),
 	}
 }
 
@@ -30,6 +34,6 @@ func (a *App) shutdown(ctx context.Context) {
 }
 
 // Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
+func (a *App) Calculate(req models.CalculateRequest) (float64, error) {
+	return a.services.Calculation.Calculate(req)
 }

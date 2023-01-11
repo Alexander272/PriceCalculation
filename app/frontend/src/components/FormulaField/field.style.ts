@@ -6,7 +6,8 @@ export const Container = styled.div`
 	border: 2px solid var(--secondary-color);
 	border-radius: 16px;
 	flex-grow: 1;
-	width: 700px;
+	width: 100%;
+	/* max-width: 700px; */
 	/* min-height: 200px; */
 	cursor: text;
 	position: relative;
@@ -15,7 +16,7 @@ export const Container = styled.div`
 export const Title = styled.input`
 	border: none;
 	outline: none;
-	font-size: 18px;
+	font-size: 1em;
 	width: 100%;
 	padding: 0 8px 6px;
 	border-bottom: 1px solid var(--secondary-color);
@@ -47,7 +48,7 @@ type SymbolProps = {
 }
 
 export const Symbol = styled.span<SymbolProps>`
-	font-size: 18px;
+	font-size: 1em;
 	font-weight: 500;
 	position: relative;
 	/* color: #fff; */

@@ -1,3 +1,5 @@
+github.com/Pramod-Devireddy/go-exprtk v1.0.1 h1:BPN3T4SOzCn8XN7of0N2Yg6ICqBwCejVHGnLwtyR55Q=
+github.com/Pramod-Devireddy/go-exprtk v1.0.1/go.mod h1:GbqdmGxU1ESDj3lu8mPbffejPB5UoOtm6eB7qr3YZ94=
 github.com/bep/debounce v1.2.1 h1:v67fRdBA9UQu2NhLFXrSg0Brw7CexQekrBwDMM8bzeY=
 github.com/bep/debounce v1.2.1/go.mod h1:H8yggRPQKLUhUoqrJC1bO2xNya7vanpDl7xR3ISbCJ0=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
