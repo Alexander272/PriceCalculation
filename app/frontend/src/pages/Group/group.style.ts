@@ -15,15 +15,18 @@ export const ColumnTitle = styled.p`
 `
 
 export const GroupItem = styled.p`
-	border-radius: 8px;
-	background-color: var(--secondary-color);
+	/* border-radius: 8px; */
+	/* background-color: var(--secondary-color); */
 	/* color: var(--white); */
+	border-bottom: 2px solid var(--primary-color);
 	padding: 6px 14px;
 	transition: all 0.3s ease-in-out;
-	margin-bottom: 6px;
+	/* margin-bottom: 6px; */
 	cursor: pointer;
 
 	&:hover {
 		/* box-shadow: inset; */
 	}
 `
+
+export const LinkItem = styled.a``

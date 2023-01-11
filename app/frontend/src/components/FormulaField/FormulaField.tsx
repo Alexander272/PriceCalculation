@@ -14,7 +14,7 @@ export const FormulaField: FC<Props> = () => {
 	return (
 		<Container>
 			<Title value={title} placeholder='Название формулы' onChange={changeTitleHandler} />
-			<Field initParts={[]} />
+			<Field />
 		</Container>
 	)
 }

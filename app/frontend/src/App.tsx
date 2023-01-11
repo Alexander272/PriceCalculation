@@ -1,3 +1,4 @@
+import { ChakraProvider } from '@chakra-ui/react'
 import { Provider } from 'react-redux'
 import { AppRoutes } from './routes'
 import { store } from './store/store'
@@ -5,7 +6,9 @@ import { store } from './store/store'
 function App() {
 	return (
 		<Provider store={store}>
-			<AppRoutes />
+			<ChakraProvider>
+				<AppRoutes />
+			</ChakraProvider>
 		</Provider>
 	)
 }

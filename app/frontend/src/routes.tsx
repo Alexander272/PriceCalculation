@@ -8,7 +8,7 @@ export const AppRoutes = () => (
 		<Routes>
 			<Route path='/' element={<Main />}>
 				<Route index element={<Group />} />
-				<Route path='/formulas' element={<Formulas />} />
+				<Route path='/formulas/:id' element={<Formulas />} />
 			</Route>
 		</Routes>
 	</BrowserRouter>

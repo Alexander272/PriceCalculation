@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import groupReducer from './groups'
+import formulaReducer from './formula'
 
 export const store = configureStore({
 	reducer: {
 		group: groupReducer,
+		formula: formulaReducer,
 	},
 })
 
