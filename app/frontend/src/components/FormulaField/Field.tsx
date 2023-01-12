@@ -4,6 +4,7 @@ import { Formula, Input, Symbol } from './field.style'
 import { changeIndex, deletePart, insertPart, uniteParts } from '../../store/formula'
 import { Calculate } from '../../../wailsjs/go/main/App'
 import { useAppDispatch, useAppSelector } from '../../hooks/useStore'
+import { Tooltip } from '@chakra-ui/react'
 
 type Props = {
 	// initParts: IFormulaParts[]
@@ -26,14 +27,20 @@ export const Field: FC<Props> = () => {
 	// const clearFocusHandler = () => setActiveIndex(-5)
 	// const focusHandler = () => setActiveIndex(-1)
 	const clearFocusHandler = () => dispatch(changeIndex(-5))
-	const focusHandler = () => dispatch(changeIndex(-1))
+	// const focusHandler = () => dispatch(changeIndex(-1))
+	// const focusHandler = () => dispatch(changeIndex(activeIndex))
 
 	const selectActiveHandler = (event: MouseEvent<HTMLDivElement>) => {
-		event.stopPropagation()
+		// event.stopPropagation()
 		inputRef.current?.focus()
 
 		// setActiveIndex(+((event.target as HTMLDivElement).dataset?.index || parts.length - 1))
 		dispatch(changeIndex(+((event.target as HTMLDivElement).dataset?.index || parts.length - 1)))
+	}
+	const saveFocusHandler = (event: MouseEvent<HTMLDivElement>) => {
+		event.preventDefault()
+		event.stopPropagation()
+		return false
 	}
 
 	const changePartsHandler = async (event: KeyboardEvent<HTMLInputElement>) => {
@@ -87,15 +94,23 @@ export const Field: FC<Props> = () => {
 			origValue: event.key,
 		}
 
-		if (new RegExp(/[0-9%]/).test(event.key)) {
+		if (new RegExp(/[.]/).test(event.key)) {
 			dispatch(insertPart(part))
+			return
 		}
-		if (new RegExp(/^[+-/*^]$/).test(event.key)) {
+		if (new RegExp(/[0-9]/).test(event.key)) {
+			if (activeIndex >= 0 && parts[activeIndex].type === 'field') {
+				dispatch(uniteParts(part))
+			} else dispatch(insertPart(part))
+			return
+		}
+		if (new RegExp(/^[+-/%*^(),]$/).test(event.key)) {
 			part.type = 'math'
 			if (event.key === '/') part.value = '÷'
 			if (event.key === '*') part.value = '\u00d7'
 
 			dispatch(insertPart(part))
+			return
 		}
 		if (new RegExp(/^[a-zA-Z]$/).test(event.key)) {
 			part.type = 'field'
@@ -109,6 +124,7 @@ export const Field: FC<Props> = () => {
 				// setParts(newParts)
 				dispatch(uniteParts(part))
 			} else dispatch(insertPart(part))
+			return
 		}
 	}
 
@@ -126,33 +142,21 @@ export const Field: FC<Props> = () => {
 				ref={inputRef}
 				value=''
 				onKeyDown={changePartsHandler}
-				onFocus={focusHandler}
+				// onFocus={focusHandler}
 				onBlur={clearFocusHandler}
 				onChange={() => {}}
 			/>
 
-			<Formula onClick={selectActiveHandler}>
+			<Formula onClick={selectActiveHandler} onMouseDown={saveFocusHandler}>
 				<Symbol type='math' data-index='-1' active={activeIndex === -1}>
 					=
 				</Symbol>
 				{parts.map((p, i) => (
-					<Symbol
-						key={p.id}
-						data-index={i}
-						type={p.type}
-						active={activeIndex === i}
-						// aria-label={p.description}
-						// data-balloon-pos='up'
-					>
-						{p.description ? (
-							<b aria-label={p.description} data-balloon-pos='up' data-index={i}>
-								{p.value}
-							</b>
-						) : (
-							p.value
-						)}
-						{/* {p.value} */}
-					</Symbol>
+					<Tooltip key={p.id} hasArrow label={p.description} isDisabled={!p.description}>
+						<Symbol data-index={i} type={p.type} active={activeIndex === i}>
+							{p.value}
+						</Symbol>
+					</Tooltip>
 				))}
 			</Formula>
 		</>

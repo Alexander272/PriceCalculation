@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 export const Container = styled.div`
@@ -29,4 +30,4 @@ export const GroupItem = styled.p`
 	}
 `
 
-export const LinkItem = styled.a``
+export const LinkItem = styled(Link)``

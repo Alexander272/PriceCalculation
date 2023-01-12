@@ -1,8 +1,11 @@
 import { FC } from 'react'
-import { HeaderContainer } from './header.style'
+import { useLocation } from 'react-router-dom'
+import { Back, HeaderContainer } from './header.style'
 
 type Props = {}
 
 export const Header: FC<Props> = () => {
-	return <HeaderContainer></HeaderContainer>
+	// const location = useLocation()
+
+	return <HeaderContainer>{/* {location.pathname != '/' && <Back>&darr;</Back>} */}</HeaderContainer>
 }

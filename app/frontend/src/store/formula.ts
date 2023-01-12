@@ -40,9 +40,13 @@ export const formulaSlice = createSlice({
 			state.formula.parts[state.activeIndex].value += action.payload.value
 			state.formula.parts[state.activeIndex].origValue += action.payload.origValue
 		},
+		insertFormula: (state, action: PayloadAction<IFormulaParts[]>) => {
+			state.formula.parts.splice(state.activeIndex > -1 ? state.activeIndex + 1 : 0, 0, ...action.payload)
+			state.activeIndex += 1
+		},
 	},
 })
 
-export const { changeIndex, insertPart, deletePart, uniteParts } = formulaSlice.actions
+export const { changeIndex, insertPart, deletePart, uniteParts, insertFormula } = formulaSlice.actions
 
 export default formulaSlice.reducer

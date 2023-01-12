@@ -4,13 +4,14 @@ import { FormulaPartType } from '../../types/formula'
 export const Container = styled.div`
 	padding: 8px 8px;
 	border: 2px solid var(--secondary-color);
-	border-radius: 16px;
+	border-radius: 12px;
 	flex-grow: 1;
 	width: 100%;
 	/* max-width: 700px; */
 	/* min-height: 200px; */
 	cursor: text;
 	position: relative;
+	background-color: var(--white);
 `
 
 export const Title = styled.input`
@@ -30,7 +31,9 @@ export const Formula = styled.p`
 
 export const Input = styled.input`
 	position: absolute;
+	left: 0;
 	opacity: 0;
+	pointer-events: none;
 `
 
 const blink = keyframes`
@@ -52,8 +55,11 @@ export const Symbol = styled.span<SymbolProps>`
 	font-weight: 500;
 	position: relative;
 	/* color: #fff; */
-	padding: ${props => (props.type === 'numeric' ? 0 : props.type === 'field' ? '0 5px' : '0 8px')};
-	background-color: ${props => (props.type === 'field' ? '#9dc4ff' : 'inherit')};
+	margin: ${props =>
+		props.type === 'numeric' || props.type === 'field' ? 0 : props.type === 'func' ? '0 3px' : '0 8px'};
+	padding: ${props => (props.type === 'field' || props.type === 'func' ? '3px 5px' : '0')};
+	background-color: ${props =>
+		props.type === 'field' ? '#9dc4ff' : props.type === 'func' ? 'var(--chakra-colors-messenger-500)' : 'inherit'};
 	border-radius: 3px;
 	text-align: center;
 

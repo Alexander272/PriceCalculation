@@ -1,4 +1,4 @@
-export type FormulaPartType = 'numeric' | 'math' | 'field'
+export type FormulaPartType = 'numeric' | 'math' | 'field' | 'func'
 
 export interface IFormulaParts {
 	id: number

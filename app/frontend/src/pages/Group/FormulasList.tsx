@@ -30,7 +30,7 @@ export const FormulasList: FC<Props> = ({ isOpen, onClose, group }) => {
 				<ModalCloseButton />
 				<ModalBody>
 					{list.map(l => (
-						<LinkItem key={l.id} href={`/formulas/${l.id}`}>
+						<LinkItem key={l.id} to={`/formulas/${l.id}`}>
 							{l.title}
 						</LinkItem>
 					))}
