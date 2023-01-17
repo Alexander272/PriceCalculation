@@ -1,6 +1,17 @@
-import { FC, Fragment, KeyboardEvent, MouseEvent, useEffect, useRef, useState } from 'react'
+import React, { FC, KeyboardEvent, MouseEvent, useEffect, useRef, useState } from 'react'
 import { IFormulaParts } from '../../types/formula'
-import { Formula, Input, Symbol } from './field.style'
+import {
+	Condition,
+	ConditionBlock,
+	ConditionLine,
+	Formula,
+	Func,
+	Input,
+	Math,
+	Numeric,
+	Param,
+	Symbol,
+} from './field.style'
 import { changeIndex, deletePart, insertPart, uniteParts } from '../../store/formula'
 import { Calculate } from '../../../wailsjs/go/main/App'
 import { useAppDispatch, useAppSelector } from '../../hooks/useStore'
@@ -8,6 +19,11 @@ import { Tooltip } from '@chakra-ui/react'
 
 type Props = {
 	// initParts: IFormulaParts[]
+}
+
+const colors = {
+	1: '--chakra-colors-green-500',
+	2: '--chakra-colors-yellow-400',
 }
 
 export const Field: FC<Props> = () => {
@@ -49,7 +65,7 @@ export const Field: FC<Props> = () => {
 			let params: any[] = []
 			parts.forEach(p => {
 				formula += p.origValue
-				if (p.type === 'field') {
+				if (p.type === 'param') {
 					params.push({
 						Id: p.id.toString(),
 						Name: p.origValue,
@@ -99,7 +115,7 @@ export const Field: FC<Props> = () => {
 			return
 		}
 		if (new RegExp(/[0-9]/).test(event.key)) {
-			if (activeIndex >= 0 && parts[activeIndex].type === 'field') {
+			if (activeIndex >= 0 && parts[activeIndex].type === 'param') {
 				dispatch(uniteParts(part))
 			} else dispatch(insertPart(part))
 			return
@@ -113,11 +129,11 @@ export const Field: FC<Props> = () => {
 			return
 		}
 		if (new RegExp(/^[a-zA-Z]$/).test(event.key)) {
-			part.type = 'field'
+			part.type = 'param'
 			part.value = event.key.toUpperCase()
 			// TODO дописать получение описания
 			part.description = 'Описание'
-			if (activeIndex >= 0 && parts[activeIndex].type === 'field') {
+			if (activeIndex >= 0 && parts[activeIndex].type === 'param') {
 				// let newParts = [...parts]
 				// newParts[activeIndex].value += part.value
 				// newParts[activeIndex].origValue += part.origValue
@@ -136,6 +152,157 @@ export const Field: FC<Props> = () => {
 	// 	setParts(newParts)
 	// }
 
+	const renderFormula = () => {
+		let level = 1
+		const result: JSX.Element[] = []
+		// let condition: JSX.Element[] = []
+
+		// for (let i = 0; i < parts.length; i++) {
+		// 	const p = parts[i]
+
+		// 	if (p.type === 'condition') {
+		// 		const res = renderCondition(i)
+		// 		i = res.idx
+		// 		result.push(<ConditionBlock key={p.id}>{res?.condition}</ConditionBlock>)
+		// 	}
+
+		// 	if (i < parts.length) result.push(addComponent(i))
+		// }
+
+		// return result
+
+		return parts.map((p, i) => {
+			let Component = Numeric
+			switch (p.type) {
+				case 'math':
+					Component = Math
+					break
+				case 'func':
+					Component = Func
+					break
+				case 'numeric':
+					Component = Numeric
+					break
+				case 'param':
+					Component = Param
+					break
+				case 'condition':
+					Component = Condition
+					break
+				default:
+					break
+			}
+
+			return (
+				<Tooltip key={p.id} hasArrow label={p.description} isDisabled={!p.description}>
+					<Component data-index={i} active={activeIndex === i}>
+						{p.value}
+					</Component>
+				</Tooltip>
+			)
+		})
+	}
+
+	const renderCondition = (idx: number) => {
+		const p = parts[idx]
+		let condition: JSX.Element[] = []
+
+		if (p.type === 'condition' && p.origValue === 'if (') {
+			condition.push(
+				<Condition key={p.id} data-index={idx} active={activeIndex === idx}>
+					{p.value}
+				</Condition>
+			)
+			idx++
+
+			while (parts[idx].origValue != ') {') {
+				condition.push(addComponent(idx))
+				idx++
+			}
+			condition.push(
+				<Condition key={parts[idx].id} data-index={idx} active={activeIndex === idx}>
+					{parts[idx].value}
+				</Condition>
+			)
+			idx++
+
+			let line: JSX.Element[] = []
+			if (parts[idx].type === 'condition') {
+				//TODO дописать получение элементов из функции
+				renderCondition(idx)
+			} else {
+				while (parts[idx].origValue != '} else {') {
+					line.push(addComponent(idx))
+					idx++
+				}
+			}
+
+			condition.push(
+				<React.Fragment key={parts[idx].id}>
+					<ConditionLine>{line}</ConditionLine>
+					<Condition key={parts[idx].id} data-index={idx} active={activeIndex === idx}>
+						{parts[idx].value}
+					</Condition>
+				</React.Fragment>
+			)
+			idx++
+
+			line = []
+			if (parts[idx].type === 'condition') {
+				//TODO дописать получение элементов из функции
+				renderCondition(idx)
+			} else {
+				while (parts[idx].origValue != '}') {
+					line.push(addComponent(idx))
+					idx++
+				}
+			}
+			condition.push(
+				<React.Fragment key={parts[idx].id}>
+					<ConditionLine>{line}</ConditionLine>
+					<Condition key={parts[idx].id} data-index={idx} active={activeIndex === idx}>
+						{parts[idx].value}
+					</Condition>
+				</React.Fragment>
+			)
+			idx++
+		}
+		return { condition, idx }
+	}
+
+	const addComponent = (idx: number) => {
+		const p = parts[idx]
+
+		let Component = Numeric
+		switch (p.type) {
+			case 'math':
+				Component = Math
+				break
+			case 'func':
+				Component = Func
+				break
+			case 'numeric':
+				Component = Numeric
+				break
+			case 'param':
+				Component = Param
+				break
+			case 'condition':
+				Component = Condition
+				break
+			default:
+				break
+		}
+
+		return (
+			<Tooltip key={p.id} hasArrow label={p.description} isDisabled={!p.description}>
+				<Component data-index={idx} active={activeIndex === idx}>
+					{p.value}
+				</Component>
+			</Tooltip>
+		)
+	}
+
 	return (
 		<>
 			<Input
@@ -147,7 +314,7 @@ export const Field: FC<Props> = () => {
 				onChange={() => {}}
 			/>
 
-			<Formula onClick={selectActiveHandler} onMouseDown={saveFocusHandler}>
+			{/* <Formula onClick={selectActiveHandler} onMouseDown={saveFocusHandler}>
 				<Symbol type='math' data-index='-1' active={activeIndex === -1}>
 					=
 				</Symbol>
@@ -158,6 +325,13 @@ export const Field: FC<Props> = () => {
 						</Symbol>
 					</Tooltip>
 				))}
+			</Formula> */}
+
+			<Formula onClick={selectActiveHandler} onMouseDown={saveFocusHandler}>
+				<Math data-index='-1' active={activeIndex === -1}>
+					=
+				</Math>
+				{renderFormula()}
 			</Formula>
 		</>
 	)

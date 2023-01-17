@@ -1,6 +1,7 @@
 import { ChangeEvent, FC, useState } from 'react'
 import { Field } from './Field'
 import { Container, Title } from './field.style'
+import { NewField } from './NewField'
 
 type Props = {}
 
@@ -15,6 +16,7 @@ export const FormulaField: FC<Props> = () => {
 		<Container>
 			<Title value={title} placeholder='Название формулы' onChange={changeTitleHandler} />
 			<Field />
+			<NewField />
 		</Container>
 	)
 }

@@ -1,5 +1,5 @@
 import styled, { keyframes } from 'styled-components'
-import { FormulaPartType } from '../../types/formula'
+import { ConditionType, FormulaPartType } from '../../types/formula'
 
 export const Container = styled.div`
 	padding: 8px 8px;
@@ -23,10 +23,21 @@ export const Title = styled.input`
 	border-bottom: 1px solid var(--secondary-color);
 `
 
-export const Formula = styled.p`
+export const Formula = styled.div`
 	margin-top: 6px;
 	padding: 0 8px;
 	word-break: break-all;
+`
+
+export const FormulaContainer = styled.div`
+	margin-top: 6px;
+	padding: 0 8px;
+	/* word-break: break-all; */
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	align-content: center;
+	gap: 3px;
 `
 
 export const Input = styled.input`
@@ -47,21 +58,16 @@ const blink = keyframes`
 
 type SymbolProps = {
 	active?: boolean
-	type: FormulaPartType
+	// type: FormulaPartType | ConditionType
 }
 
 export const Symbol = styled.span<SymbolProps>`
 	font-size: 1em;
 	font-weight: 500;
 	position: relative;
-	/* color: #fff; */
-	margin: ${props =>
-		props.type === 'numeric' || props.type === 'field' ? 0 : props.type === 'func' ? '0 3px' : '0 8px'};
-	padding: ${props => (props.type === 'field' || props.type === 'func' ? '3px 5px' : '0')};
-	background-color: ${props =>
-		props.type === 'field' ? '#9dc4ff' : props.type === 'func' ? 'var(--chakra-colors-messenger-500)' : 'inherit'};
 	border-radius: 3px;
 	text-align: center;
+	color: #000;
 
 	&:after {
 		content: '';
@@ -75,4 +81,182 @@ export const Symbol = styled.span<SymbolProps>`
 		z-index: 50;
 		animation: ${blink} 1.6s infinite;
 	}
+`
+
+export const Math = styled(Symbol)`
+	margin: 0 4px;
+	padding: 0 4px;
+`
+
+export const Numeric = styled(Symbol)``
+
+export const Param = styled(Symbol)`
+	padding: 3px 5px;
+	background-color: #9dc4ff;
+`
+
+export const Func = styled(Symbol)`
+	margin: 0 3px;
+	padding: 3px 5px;
+	background-color: var(--chakra-colors-messenger-500);
+	color: var(--white);
+`
+
+export const NewSymbol = styled.span<SymbolProps>`
+	position: relative;
+	/* padding: 1px; */
+
+	:first-child {
+		padding-left: 3px;
+	}
+	:last-child {
+		padding-right: 3px;
+	}
+
+	&:after {
+		content: '';
+		position: absolute;
+		right: 0px;
+		top: 0;
+		width: 1px;
+		height: 100%;
+		background: #152736;
+		display: ${props => (props.active ? 'block' : 'none')};
+		z-index: 50;
+		animation: ${blink} 1.6s infinite;
+	}
+`
+
+export const Block = styled.div<SymbolProps>`
+	font-size: 1em;
+	font-weight: 500;
+	position: relative;
+	border-radius: 3px;
+	color: #000;
+
+	&:before {
+		content: '';
+		position: absolute;
+		right: -3px;
+		top: 0;
+		width: 1px;
+		height: 100%;
+		background: #152736;
+		display: ${props => (props.active ? 'block' : 'none')};
+		z-index: 50;
+		animation: ${blink} 1.6s infinite;
+	}
+`
+
+export const NewMath = styled(Block)`
+	margin: 0 1px;
+	padding: 0 3px;
+`
+
+export const NewNumeric = styled(Block)`
+	margin: 1px 2px;
+`
+
+export const NewParam = styled(Block)`
+	margin: 1px 4px;
+	padding: 0px 5px;
+	background-color: #9dc4ff;
+`
+
+export const NewFunc = styled.div`
+	margin: 0 5px;
+	/* padding: 0px 3px; */
+	background-color: var(--white);
+	border-radius: 3px;
+	display: flex;
+	align-items: center;
+`
+
+export const FuncBlock = styled.div<{ level: number; active?: boolean }>`
+	margin: ${props => (props.level === 1 ? '0px 3px' : '0px')};
+	padding: ${props => (props.level === 1 ? '3px 8px' : '0px')};
+	background-color: var(--chakra-colors-messenger-500);
+	color: var(--white);
+	display: flex;
+	align-items: center;
+	position: relative;
+	border-radius: ${props => (props.level === 1 ? '3px' : '0px')};
+
+	&:before {
+		content: '';
+		position: absolute;
+		right: -2px;
+		top: 0;
+		width: 1px;
+		height: 100%;
+		background: #152736;
+		display: ${props => (props.active ? 'block' : 'none')};
+		z-index: 50;
+		animation: ${blink} 1.6s infinite;
+	}
+`
+
+export const ConditionBlock = styled.div`
+	flex-basis: 100%;
+`
+
+export type ConditionProps = {
+	bgColor?: string
+}
+
+export const NewCondition = styled.div<ConditionProps & { active?: boolean }>`
+	background-color: ${props => props.bgColor || 'var(--chakra-colors-orange-500)'};
+	color: ${props => (props.bgColor != 'var(--chakra-colors-yellow-400)' ? 'var(--white)' : 'inherit')};
+	padding: 4px 10px;
+	width: fit-content;
+	border-radius: 4px;
+	display: flex;
+	align-items: center;
+	position: relative;
+
+	&:before {
+		content: '';
+		position: absolute;
+		right: -2px;
+		top: 0;
+		width: 1px;
+		height: 100%;
+		background: #152736;
+		display: ${props => (props.active ? 'block' : 'none')};
+		z-index: 50;
+		animation: ${blink} 1.6s infinite;
+	}
+`
+
+export const NewConditionLine = styled.div<ConditionProps>`
+	padding: 3px 5px 3px 10px;
+	margin-left: 4px;
+	background-color: var(--white);
+	border-radius: 3px;
+	position: relative;
+	display: flex;
+	align-items: center;
+
+	&:after {
+		content: '';
+		background-color: ${props => props.bgColor || 'var(--chakra-colors-orange-500)'};
+		height: calc(100% + 4px);
+		width: 6px;
+		position: absolute;
+		left: -4px;
+		top: -2px;
+	}
+`
+
+export const ConditionLine = styled.div<ConditionProps>`
+	border-left: 5px solid ${props => props.bgColor || 'var(--chakra-colors-orange-500)'};
+	padding-left: 6px;
+	margin: 0 3px;
+`
+
+export const Condition = styled(Symbol)<ConditionProps>`
+	margin: 0 3px;
+	padding: 3px 5px;
+	background-color: ${props => props.bgColor || 'var(--chakra-colors-orange-500)'};
+	color: ${props => (props.bgColor != 'var(--chakra-colors-yellow-400)' ? 'var(--white)' : 'inherit')};
 `

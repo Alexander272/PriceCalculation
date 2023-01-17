@@ -53,6 +53,13 @@ const functions = [
 		color: 'messenger',
 	},
 	{
+		id: 'floor',
+		value: 'ОКРВНИЗ',
+		formula: 'floor',
+		description: 'Наибольшее целое число, меньшее или равное x. ОКРВНИЗ(x)',
+		color: 'messenger',
+	},
+	{
 		id: 'ceil',
 		value: 'ОКРВВЕРХ',
 		formula: 'ceil',
@@ -75,13 +82,6 @@ const functions = [
 	},
 ]
 const condition = [
-	{
-		id: 'if',
-		value: 'Если',
-		formula: 'if',
-		color: 'linkedin',
-		basis: '60%',
-	},
 	{
 		id: 'pi',
 		value: 'Пи',
@@ -142,6 +142,24 @@ export const ButtonGroup: FC<Props> = () => {
 		dispatch(insertFormula(parts))
 	}
 
+	const insertCondition = () => {
+		let parts: IFormulaParts[] = [
+			// { id: Date.now(), type: 'condStart', value: '', origValue: '' },
+			{ id: Date.now() + 1, type: 'condition', value: 'Если (', origValue: 'if (' },
+			{ id: Date.now() + 2, type: 'condition', value: ') {', origValue: ') {' },
+			// { id: Date.now() + 3, type: 'condLine', value: '', origValue: '' },
+			// { id: Date.now() + 4, type: 'condition', value: '}', origValue: '}' },
+			{ id: Date.now() + 5, type: 'condition', value: '} Иначе {', origValue: '} else {' },
+			// { id: Date.now() + 6, type: 'condition', value: '{', origValue: '{' },
+			// { id: Date.now() + 7, type: 'condLine', value: '', origValue: '' },
+			{ id: Date.now() + 8, type: 'condition', value: '}', origValue: '}' },
+			// { id: Date.now() + 9, type: 'condLine', value: '', origValue: '' },
+			// { id: Date.now() + 10, type: 'condEnd', value: '', origValue: '' },
+		]
+
+		dispatch(insertFormula(parts))
+	}
+
 	const saveFocusHandler = (event: MouseEvent<HTMLButtonElement>) => {
 		event.preventDefault()
 		event.stopPropagation()
@@ -166,6 +184,15 @@ export const ButtonGroup: FC<Props> = () => {
 				))}
 			</Column>
 			<Column>
+				<Button
+					flexBasis={'60%'}
+					flexGrow={1}
+					colorScheme='linkedin'
+					onMouseDown={saveFocusHandler}
+					onClick={insertCondition}
+				>
+					Если
+				</Button>
 				{condition.map(c => (
 					<Button
 						key={c.id}
