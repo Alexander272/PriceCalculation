@@ -1,407 +1,27 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import type { FormulaPartNumeric, IFormula, IFormulaParts, IPartFormula, ITestFormula } from '../types/formula'
+import type {
+	FormulaPartMath,
+	FormulaPartNumeric,
+	FormulaPartParam,
+	INewFormula,
+	IFormulaParts,
+	IPartFormula,
+	FormulaPartFunc,
+	FormulaPartCondition,
+} from '../types/formula'
 
 export interface IFormulasState {
 	loading: boolean
 	error: string | null
-	formula: IFormula
-	testFormula: ITestFormula
+	// formula: IFormula
+	formula: INewFormula
 	activeIndex: number
 	activeIdx: number
 	activeId: string
+	deleteCount: number
 	breadcrumbs: string
 }
-
-// const testParts: IFormulaParts[] = [
-// 	{
-// 		id: 1673843390002,
-// 		type: 'param',
-// 		value: 'A',
-// 		origValue: 'a',
-// 		description: 'Описание',
-// 	},
-// 	{
-// 		id: 1673843390466,
-// 		type: 'math',
-// 		value: '+',
-// 		origValue: '+',
-// 	},
-// 	{
-// 		id: 1673843391514,
-// 		type: 'param',
-// 		value: 'B',
-// 		origValue: 'b',
-// 		description: 'Описание',
-// 	},
-// 	{
-// 		id: 1673843391746,
-// 		type: 'math',
-// 		value: '+',
-// 		origValue: '+',
-// 	},
-// 	{
-// 		id: 1673842893682,
-// 		type: 'condition',
-// 		value: 'Если (',
-// 		origValue: 'if (',
-// 	},
-// 	{
-// 		id: 1673843394826,
-// 		type: 'param',
-// 		value: 'B',
-// 		origValue: 'b',
-// 		description: 'Описание',
-// 	},
-// 	{
-// 		id: 1673842893683,
-// 		type: 'condition',
-// 		value: ') {',
-// 		origValue: ') {',
-// 	},
-// 	{
-// 		id: 1673842896086,
-// 		type: 'numeric',
-// 		value: '1',
-// 		origValue: '1',
-// 	},
-// 	{
-// 		id: 1673842896542,
-// 		type: 'numeric',
-// 		value: '5',
-// 		origValue: '5',
-// 	},
-// 	{
-// 		id: 1673842893686,
-// 		type: 'condition',
-// 		value: '} Иначе {',
-// 		origValue: '} else {',
-// 	},
-// 	{
-// 		id: 1673842902559,
-// 		type: 'param',
-// 		value: 'A',
-// 		origValue: 'a',
-// 		description: 'Описание',
-// 	},
-// 	{
-// 		id: 1673842902750,
-// 		type: 'math',
-// 		value: '+',
-// 		origValue: '+',
-// 	},
-// 	{
-// 		id: 1673842903342,
-// 		type: 'numeric',
-// 		value: '1',
-// 		origValue: '1',
-// 	},
-// 	{
-// 		id: 1673842904158,
-// 		type: 'numeric',
-// 		value: '2',
-// 		origValue: '2',
-// 	},
-// 	{
-// 		id: 1673842893689,
-// 		type: 'condition',
-// 		value: '}',
-// 		origValue: '}',
-// 	},
-// ]
-
-const testParts: IFormulaParts[] = [
-	{
-		id: 1673857488303,
-		type: 'numeric',
-		value: '1',
-		origValue: '1',
-	},
-	{
-		id: 1673857488477,
-		type: 'numeric',
-		value: '5',
-		origValue: '5',
-	},
-	{
-		id: 1673857489245,
-		type: 'math',
-		value: '+',
-		origValue: '+',
-	},
-	{
-		id: 1673857490085,
-		type: 'param',
-		value: 'A',
-		origValue: 'a',
-		description: 'Описание',
-	},
-	{
-		id: 1673857507821,
-		type: 'math',
-		value: '+',
-		origValue: '+',
-	},
-	{
-		id: 1673857508703,
-		type: 'func',
-		value: 'ОКРВВЕРХ(',
-		origValue: 'ceil(',
-	},
-	{
-		id: 1673857510693,
-		type: 'numeric',
-		value: '1',
-		origValue: '1',
-	},
-	{
-		id: 1673857510821,
-		type: 'numeric',
-		value: '4',
-		origValue: '4',
-	},
-	{
-		id: 1673857511860,
-		type: 'numeric',
-		value: '.',
-		origValue: '.',
-	},
-	{
-		id: 1673857516300,
-		type: 'numeric',
-		value: '5',
-		origValue: '5',
-	},
-	{
-		id: 1673857531500,
-		type: 'numeric',
-		value: '4',
-		origValue: '4',
-	},
-	{
-		id: 1673857523668,
-		type: 'math',
-		value: '×',
-		origValue: '*',
-	},
-	{
-		id: 1673857524964,
-		type: 'numeric',
-		value: '1',
-		origValue: '1',
-	},
-	{
-		id: 1673857525588,
-		type: 'numeric',
-		value: '0',
-		origValue: '0',
-	},
-	{
-		id: 1673857508704,
-		type: 'func',
-		value: ')',
-		origValue: ')',
-	},
-	{
-		id: 1673857537404,
-		type: 'math',
-		value: '÷',
-		origValue: '/',
-	},
-	{
-		id: 1673857539580,
-		type: 'numeric',
-		value: '1',
-		origValue: '1',
-	},
-	{
-		id: 1673857539796,
-		type: 'numeric',
-		value: '0',
-		origValue: '0',
-	},
-	{
-		id: 1673857572579,
-		type: 'math',
-		value: '-',
-		origValue: '-',
-	},
-	{
-		id: 1673857577126,
-		type: 'func',
-		value: 'ОКРУГТ(',
-		origValue: 'roundn(',
-	},
-	{
-		id: 1673857579683,
-		type: 'numeric',
-		value: '1',
-		origValue: '1',
-	},
-	{
-		id: 1673857579795,
-		type: 'numeric',
-		value: '2',
-		origValue: '2',
-	},
-	{
-		id: 1673857580243,
-		type: 'numeric',
-		value: '.',
-		origValue: '.',
-	},
-	{
-		id: 1673857580539,
-		type: 'numeric',
-		value: '4',
-		origValue: '4',
-	},
-	{
-		id: 1673857581315,
-		type: 'numeric',
-		value: '5',
-		origValue: '5',
-	},
-	{
-		id: 1673857583603,
-		type: 'numeric',
-		value: '6',
-		origValue: '6',
-	},
-	{
-		id: 1673857583763,
-		type: 'numeric',
-		value: '7',
-		origValue: '7',
-	},
-	{
-		id: 1673857584171,
-		type: 'math',
-		value: ',',
-		origValue: ',',
-	},
-	{
-		id: 1673857584995,
-		type: 'numeric',
-		value: '2',
-		origValue: '2',
-	},
-	{
-		id: 1673857577127,
-		type: 'func',
-		value: ')',
-		origValue: ')',
-	},
-	{
-		id: 1673857603602,
-		type: 'math',
-		value: '×',
-		origValue: '*',
-	},
-	{
-		id: 1673857613653,
-		type: 'func',
-		value: 'ОКРВНИЗ(',
-		origValue: 'floor(',
-	},
-	{
-		id: 1673857614676,
-		type: 'func',
-		value: 'МОД(',
-		origValue: 'abs(',
-	},
-	{
-		id: 1673857615746,
-		type: 'math',
-		value: '-',
-		origValue: '-',
-	},
-	{
-		id: 1673857616106,
-		type: 'numeric',
-		value: '1',
-		origValue: '1',
-	},
-	{
-		id: 1673857617850,
-		type: 'numeric',
-		value: '.',
-		origValue: '.',
-	},
-	{
-		id: 1673857618378,
-		type: 'numeric',
-		value: '5',
-		origValue: '5',
-	},
-	{
-		id: 1673857614677,
-		type: 'func',
-		value: ')',
-		origValue: ')',
-	},
-	{
-		id: 1673857613654,
-		type: 'func',
-		value: ')',
-		origValue: ')',
-	},
-	{
-		id: 1693857572579,
-		type: 'math',
-		value: '-',
-		origValue: '-',
-	},
-	{
-		id: 1673862890524,
-		type: 'condition',
-		value: 'Если (',
-		origValue: 'if (',
-	},
-	{
-		id: 1673862901848,
-		type: 'param',
-		value: 'A',
-		origValue: 'a',
-		description: 'Описание',
-	},
-	{
-		id: 1673862890525,
-		type: 'condition',
-		value: ') {',
-		origValue: ') {',
-	},
-	{
-		id: 1673862903888,
-		type: 'numeric',
-		value: '5',
-		origValue: '5',
-	},
-	{
-		id: 1673862890528,
-		type: 'condition',
-		value: '} Иначе {',
-		origValue: '} else {',
-	},
-	{
-		id: 1673862904760,
-		type: 'numeric',
-		value: '1',
-		origValue: '1',
-	},
-	{
-		id: 1673862904952,
-		type: 'numeric',
-		value: '0',
-		origValue: '0',
-	},
-	{
-		id: 1673862890531,
-		type: 'condition',
-		value: '}',
-		origValue: '}',
-	},
-]
 
 const test: IPartFormula[] = [
 	{
@@ -435,94 +55,98 @@ const test: IPartFormula[] = [
 		origValue: 'ceil(',
 		endValue: ')',
 		children: [
+			{ id: '6', type: 'Start' },
 			{
-				id: '6',
+				id: '7',
 				type: 'Numeric',
 				value: '14.54',
 			},
 			{
-				id: '7',
+				id: '8',
 				type: 'Math',
 				value: '×',
 				origValue: '*',
 			},
 			{
-				id: '8',
+				id: '9',
 				type: 'Numeric',
 				value: '10',
 			},
 		],
 	},
 	{
-		id: '9',
+		id: '10',
 		type: 'Math',
 		value: '÷',
 		origValue: '/',
 	},
 	{
-		id: '10',
+		id: '11',
 		type: 'Numeric',
 		value: '10',
 	},
 	{
-		id: '11',
+		id: '12',
 		type: 'Math',
 		value: '-',
 		origValue: '-',
 	},
 	{
-		id: '12',
+		id: '13',
 		type: 'Func',
 		value: 'ОКРУГТ(',
 		origValue: 'roundn(',
 		endValue: ')',
 		children: [
+			{ id: '14', type: 'Start' },
 			{
-				id: '13',
+				id: '15',
 				type: 'Numeric',
 				value: '12.4567',
 			},
 			{
-				id: '14',
+				id: '16',
 				type: 'Math',
 				value: ',',
 				origValue: ',',
 			},
 			{
-				id: '15',
+				id: '17',
 				type: 'Numeric',
 				value: '2',
 			},
 		],
 	},
 	{
-		id: '16',
+		id: '18',
 		type: 'Math',
 		value: '×',
 		origValue: '*',
 	},
 	{
-		id: '17',
+		id: '19',
 		type: 'Func',
 		value: 'ОКРВНИЗ(',
 		origValue: 'floor(',
 		endValue: ')',
 		children: [
+			{ id: '20', type: 'Start' },
 			{
-				id: '18',
+				id: '21',
 				type: 'Func',
 				value: 'МОД(',
 				origValue: 'abs(',
 				endValue: ')',
 				children: [
+					{ id: '22', type: 'Start' },
 					{
-						id: '19',
+						id: '23',
 						type: 'Math',
 						value: '-',
 						origValue: '-',
 					},
 					{
-						id: '20',
+						id: '24',
 						type: 'Numeric',
 						value: '1.54',
 					},
@@ -531,48 +155,65 @@ const test: IPartFormula[] = [
 		],
 	},
 	{
-		id: '21',
+		id: '25',
 		type: 'Math',
 		value: '-',
 		origValue: '-',
 	},
 	{
-		id: '22',
+		id: '26',
 		type: 'Condition',
 		exp: [
 			{
-				id: '23',
+				id: '27',
+				type: 'Start',
+			},
+			{
+				id: '28',
 				type: 'Param',
 				value: 'B',
 				origValue: 'b',
 				description: 'Description',
 			},
 			{
-				id: '24',
+				id: '29',
 				type: 'Math',
 				value: '>',
 				origValue: '>',
 			},
 			{
-				id: '25',
+				id: '30',
 				type: 'Numeric',
 				value: '15',
 			},
 		],
 		then: [
+			{ id: '31', type: 'Start' },
 			{
-				id: '26',
+				id: '32',
 				type: 'Numeric',
 				value: '10',
 			},
 		],
 		else: [
+			{ id: '33', type: 'Start' },
 			{
-				id: '27',
+				id: '34',
 				type: 'Numeric',
 				value: '20',
 			},
 		],
+	},
+	{
+		id: '34',
+		type: 'Math',
+		value: '-',
+		origValue: '-',
+	},
+	{
+		id: '35',
+		type: 'Numeric',
+		value: '1.54',
 	},
 ]
 
@@ -583,17 +224,18 @@ const initialState: IFormulasState = {
 	activeIdx: 0,
 	activeId: 'start',
 	breadcrumbs: '',
+	deleteCount: 0,
+	// formula: {
+	// 	id: '',
+	// 	groupId: '',
+	// 	title: '',
+	// 	parts: [],
+	// },
 	formula: {
 		id: '',
 		groupId: '',
 		title: '',
-		parts: testParts || [],
-	},
-	testFormula: {
-		id: '',
-		groupId: '',
-		title: '',
-		parts: test,
+		parts: [],
 	},
 }
 
@@ -601,6 +243,10 @@ export const formulaSlice = createSlice({
 	name: 'formula',
 	initialState,
 	reducers: {
+		setTitle: (state, action: PayloadAction<string>) => {
+			state.formula.title = action.payload
+		},
+
 		changeIndex: (state, action: PayloadAction<number>) => {
 			state.activeIndex = action.payload
 		},
@@ -612,22 +258,13 @@ export const formulaSlice = createSlice({
 		},
 		nextId: state => {
 			if (state.activeId === 'start') {
-				if (state.testFormula.parts.length > 0) state.activeId = state.testFormula.parts[0].id
+				if (state.formula.parts.length > 0) state.activeId = state.formula.parts[0].id
 				return
 			}
 
-			let parts = state.testFormula.parts
-			if (state.breadcrumbs !== '') {
-				const path = state.breadcrumbs.split('/')
-				path.forEach(p => {
-					let str = p.split('@')
-					let find = parts.find(part => part.id === str[0])
-					if (find?.type === 'Func') parts = find.children
-					if (find?.type === 'Condition') parts = find[str[1] as 'exp']
-				})
-			}
-
-			const idx = parts.findIndex(p => p.id === state.activeId)
+			let parts = state.formula.parts
+			const { parts: newParts, idx } = getParts(parts, state.breadcrumbs, state.activeId)
+			parts = newParts
 			let part = parts[idx]
 
 			if (part.type === 'Numeric' && (part as FormulaPartNumeric).value.length - 1 > state.activeIdx) {
@@ -644,65 +281,207 @@ export const formulaSlice = createSlice({
 				return
 			}
 
-			let parts = state.testFormula.parts
-			if (state.breadcrumbs !== '') {
-				const path = state.breadcrumbs.split('/')
-				path.forEach(p => {
-					let str = p.split('@')
-					let find = parts.find(part => part.id === str[0])
-					if (find?.type === 'Func') parts = find.children
-					if (find?.type === 'Condition') parts = find[str[1] as 'exp']
-				})
-			}
+			let parts = state.formula.parts
+			const { parts: newParts, idx } = getParts(parts, state.breadcrumbs, state.activeId)
+			parts = newParts
 
-			const idx = parts.findIndex(p => p.id === state.activeId)
 			let part = parts[idx]
 
 			if (part.type === 'Numeric' && state.activeIdx > 0) {
 				state.activeIdx -= 1
 			} else {
-				if (idx === 0) return
+				if (idx === 0) {
+					state.activeId = 'start'
+					state.activeIdx = 0
+					return
+				}
 				// TODO учесть наличие дочерних и родительских элементов
 				state.activeId = parts[idx - 1].id
-				state.activeIdx = (parts[idx - 1] as FormulaPartNumeric).value.length - 1
+				state.activeIdx = (parts[idx - 1] as FormulaPartNumeric).value?.length - 1 || 0
 			}
 		},
 
-		insertParts: (state, action: PayloadAction<IPartFormula[]>) => {
-			let parts = state.testFormula.parts
-			if (state.breadcrumbs !== '') {
-				const path = state.breadcrumbs.split('/')
-				path.forEach(p => {
-					let str = p.split('@')
-					let find = parts.find(part => part.id === str[0])
-					if (find?.type === 'Func') parts = find.children
-					if (find?.type === 'Condition') parts = find[str[1] as 'exp']
-				})
+		insertNumeric: (state, action: PayloadAction<FormulaPartNumeric>) => {
+			let parts = state.formula.parts
+			const { parts: newParts, idx } = getParts(parts, state.breadcrumbs, state.activeId)
+			parts = newParts
+
+			if (idx === -1) {
+				parts.splice(0, 0, action.payload)
+				state.activeId = action.payload.id
+				return
 			}
 
-			const idx = parts.findIndex(p => p.id === state.activeId)
-			let part = parts[idx]
+			if (parts[idx].type === 'Param' || parts[idx].type === 'Numeric') {
+				if ((action.payload as FormulaPartNumeric).value === '.' && parts[idx].type === 'Param') {
+					return
+				}
+
+				let tmp = (parts[idx] as FormulaPartNumeric).value.split('')
+				tmp.splice(state.activeIdx + 1, 0, action.payload.value)
+				;(parts[idx] as FormulaPartNumeric).value = tmp.join('')
+
+				if (parts[idx].type === 'Param') {
+					;(parts[idx] as FormulaPartParam).origValue += action.payload.value
+				}
+				state.activeIdx += 1
+			} else {
+				parts.splice(idx + 1, 0, action.payload)
+				state.activeId = action.payload.id
+			}
+		},
+		insertMath: (state, action: PayloadAction<FormulaPartMath>) => {
+			let parts = state.formula.parts
+			const { parts: newParts, idx } = getParts(parts, state.breadcrumbs, state.activeId)
+			parts = newParts
+
+			parts.splice(idx > -1 ? idx + 1 : 0, 0, action.payload)
+			state.activeId = action.payload.id
+			state.activeIdx = 0
+		},
+		insertParam: (state, action: PayloadAction<FormulaPartParam>) => {
+			let parts = state.formula.parts
+			const { parts: newParts, idx } = getParts(parts, state.breadcrumbs, state.activeId)
+			parts = newParts
+
+			if (idx === -1) {
+				parts.splice(0, 0, action.payload)
+				state.activeId = action.payload.id
+				return
+			}
+
+			if (parts[idx].type === 'Numeric') return
+
+			if (parts[idx].type === 'Param') {
+				;(parts[idx] as FormulaPartParam).value = action.payload.value
+
+				if (parts[idx].type === 'Param') {
+					;(parts[idx] as FormulaPartParam).origValue += action.payload.origValue
+				}
+				state.activeIdx += 1
+			} else {
+				parts.splice(idx > -1 ? idx + 1 : 0, 0, action.payload)
+				state.activeId = action.payload.id
+			}
+		},
+		insertFormula: (state, action: PayloadAction<FormulaPartFunc>) => {
+			let parts = state.formula.parts
+			let { parts: newParts, idx } = getParts(parts, state.breadcrumbs, state.activeId)
+			parts = newParts
+
+			parts.splice(idx > -1 ? idx + 1 : 0, 0, action.payload)
+			state.activeId = action.payload.children[0].id
+			state.breadcrumbs += `${action.payload.id}/`
+			state.activeIdx = 0
+		},
+		insertCondition: (state, action: PayloadAction<FormulaPartCondition>) => {
+			let parts = state.formula.parts
+			let { parts: newParts, idx } = getParts(parts, state.breadcrumbs, state.activeId)
+			parts = newParts
+
+			parts.splice(idx > -1 ? idx + 1 : 0, 0, action.payload)
+			state.activeId = action.payload.exp[0].id
+			state.breadcrumbs += `${action.payload.id}@exp/`
+			state.activeIdx = 0
+		},
+		deletePart: (state, action: PayloadAction<boolean>) => {
+			state.deleteCount += 1
+			let parts = state.formula.parts
+			let { parts: newParts, idx } = getParts(parts, state.breadcrumbs, state.activeId)
+			parts = newParts
+
+			if (idx === -1 || idx > parts.length - 1) return
+
+			let newId = 'start'
+			let newIndex = 0
+
+			if (!action.payload) {
+				newId = parts[idx >= parts.length - 2 ? parts.length - 2 : idx - 1]?.id || 'start'
+				newIndex = (parts[idx - 1 >= 0 ? idx - 1 : 0] as FormulaPartNumeric)?.value?.length - 1 || 0
+			} else {
+				newId = parts[idx >= parts.length - 1 ? parts.length - 1 : idx]?.id || 'start'
+				newIndex = (parts[idx >= 0 ? idx : 0] as FormulaPartNumeric)?.value?.length - 1 || 0
+				if (idx < parts.length - 1) idx += 1
+			}
+
+			if (parts[idx].type === 'Numeric') {
+				let tmp = (parts[idx] as FormulaPartNumeric).value.split('')
+				tmp.splice(state.activeIdx, 1)
+				;(parts[idx] as FormulaPartNumeric).value = tmp.join('')
+
+				if (!action.payload) state.activeIdx -= 1
+
+				if (state.activeIdx == -1 || (parts[idx] as FormulaPartNumeric).value == '') {
+					parts.splice(idx, 1)
+					state.activeId = newId
+					state.activeIdx = newIndex
+				}
+				state.deleteCount = 0
+			} else if (parts[idx].type === 'Condition' || parts[idx].type === 'Func') {
+				if (state.deleteCount < 2) return
+				parts.splice(idx, 1)
+				state.activeId = newId
+				state.activeIdx = newIndex
+				state.deleteCount = 0
+			} else if (parts[idx].type != 'Start') {
+				parts.splice(idx, 1)
+				state.activeId = newId
+				state.activeIdx = newIndex
+				state.deleteCount = 0
+			}
 		},
 
-		insertPart: (state, action: PayloadAction<IFormulaParts>) => {
-			state.formula.parts.splice(state.activeIndex > -1 ? state.activeIndex + 1 : 0, 0, action.payload)
-			state.activeIndex += 1
-		},
-		deletePart: (state, action: PayloadAction<number>) => {
-			state.formula.parts = state.formula.parts.filter((_, i) => i !== action.payload)
-		},
-		uniteParts: (state, action: PayloadAction<IFormulaParts>) => {
-			state.formula.parts[state.activeIndex].value += action.payload.value
-			state.formula.parts[state.activeIndex].origValue += action.payload.origValue
-		},
-		insertFormula: (state, action: PayloadAction<IFormulaParts[]>) => {
-			state.formula.parts.splice(state.activeIndex > -1 ? state.activeIndex + 1 : 0, 0, ...action.payload)
-			state.activeIndex += 1
-		},
+		// insertPart: (state, action: PayloadAction<IFormulaParts>) => {
+		// 	state.formula.parts.splice(state.activeIndex > -1 ? state.activeIndex + 1 : 0, 0, action.payload)
+		// 	state.activeIndex += 1
+		// },
+		// deletePart: (state, action: PayloadAction<number>) => {
+		// 	state.formula.parts = state.formula.parts.filter((_, i) => i !== action.payload)
+		// },
+		// uniteParts: (state, action: PayloadAction<IFormulaParts>) => {
+		// 	state.formula.parts[state.activeIndex].value += action.payload.value
+		// 	state.formula.parts[state.activeIndex].origValue += action.payload.origValue
+		// },
+		// insertFormula: (state, action: PayloadAction<IFormulaParts[]>) => {
+		// 	state.formula.parts.splice(state.activeIndex > -1 ? state.activeIndex + 1 : 0, 0, ...action.payload)
+		// 	state.activeIndex += 1
+		// },
 	},
 })
 
-export const { changeIndex, changeId, nextId, prevId, insertParts, insertPart, deletePart, uniteParts, insertFormula } =
-	formulaSlice.actions
+function getParts(parts: any[], breadcrumbs: string, activeId: string) {
+	if (breadcrumbs !== '') {
+		const path = breadcrumbs.split('/')
+		path.forEach(p => {
+			let str = p.split('@')
+			let find = parts.find(part => part.id === str[0])
+			if (find?.type === 'Func') parts = find.children
+			if (find?.type === 'Condition') parts = find[str[1] as 'exp']
+		})
+	}
+	const idx = parts.findIndex(p => p.id === activeId)
+
+	return { parts, idx }
+}
+
+export const {
+	setTitle,
+
+	changeIndex,
+	changeId,
+	nextId,
+	prevId,
+	insertNumeric,
+	insertMath,
+	insertParam,
+	insertFormula,
+	insertCondition,
+	deletePart,
+
+	// insertPart,
+	// deletePart,
+	// uniteParts,
+	// insertFormula,
+} = formulaSlice.actions
 
 export default formulaSlice.reducer

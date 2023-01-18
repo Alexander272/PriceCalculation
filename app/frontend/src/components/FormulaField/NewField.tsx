@@ -1,8 +1,8 @@
 import { FC, KeyboardEvent, MouseEvent, useEffect, useRef } from 'react'
 import { useAppDispatch, useAppSelector } from '../../hooks/useStore'
-import { changeId, insertParts, nextId, prevId } from '../../store/formula'
-import { IPartFormula } from '../../types/formula'
-import { FormulaContainer, Input, NewMath } from './field.style'
+import { changeId, deletePart, insertMath, insertNumeric, insertParam, nextId, prevId } from '../../store/formula'
+import { FormulaPartNumeric, IPartFormula } from '../../types/formula'
+import { FormulaContainer, Input, NewMath, Start } from './field.style'
 import { Formula } from './Formula'
 
 type Props = {}
@@ -10,12 +10,21 @@ type Props = {}
 export const NewField: FC<Props> = () => {
 	const inputRef = useRef<HTMLInputElement | null>(null)
 	const activeId = useAppSelector(state => state.formula.activeId)
-	const parts = useAppSelector(state => state.formula.testFormula.parts)
+	const parts = useAppSelector(state => state.formula.formula.parts)
 
 	const dispatch = useAppDispatch()
 
 	useEffect(() => {
 		inputRef.current?.focus()
+		let newId = {
+			id: parts.length > 0 ? parts[parts.length - 1].id : 'start',
+			idx:
+				parts.length > 0 && parts[parts.length - 1].type === 'Numeric'
+					? (parts[parts.length - 1] as FormulaPartNumeric).value?.length - 1
+					: 0,
+			bread: '',
+		}
+		dispatch(changeId(newId))
 	}, [])
 
 	const clearFocusHandler = () => dispatch(changeId({ id: '', idx: 0, bread: '' }))
@@ -24,10 +33,16 @@ export const NewField: FC<Props> = () => {
 		inputRef.current?.focus()
 		console.log((event.target as HTMLDivElement).dataset)
 
+		let newId = parts.length > 0 ? parts[parts.length - 1].id : 'start'
+		let newIdx =
+			parts.length > 0 && parts[parts.length - 1].type === 'Numeric'
+				? (parts[parts.length - 1] as FormulaPartNumeric).value?.length - 1
+				: 0
+
 		dispatch(
 			changeId({
-				id: (event.target as HTMLDivElement).dataset.id || 'start',
-				idx: +((event.target as HTMLDivElement).dataset.index || 0),
+				id: (event.target as HTMLDivElement).dataset.id || newId,
+				idx: +((event.target as HTMLDivElement).dataset.index || newIdx),
 				bread: (event.target as HTMLDivElement).dataset.bread || '',
 			})
 		)
@@ -39,8 +54,6 @@ export const NewField: FC<Props> = () => {
 	}
 
 	const changePartsHandler = async (event: KeyboardEvent<HTMLInputElement>) => {
-		console.log(event.key)
-
 		if (event.key === 'Enter') {
 			// let formula = ''
 			// let params: any[] = []
@@ -68,44 +81,41 @@ export const NewField: FC<Props> = () => {
 			return
 		}
 
-		const part: IPartFormula = {
-			id: Date.now().toString(),
-			type: 'Numeric',
-			value: event.key,
-		}
-
-		if (new RegExp(/[.]/).test(event.key)) {
-			dispatch(insertParts([part]))
+		if (event.key === 'Backspace' || event.key === 'Delete') {
+			dispatch(deletePart(event.key === 'Delete'))
 			return
 		}
-		// if (new RegExp(/[0-9]/).test(event.key)) {
-		// 	if (activeIndex >= 0 && parts[activeIndex].type === 'param') {
-		// 		dispatch(uniteParts(part))
-		// 	} else dispatch(insertPart(part))
-		// 	return
-		// }
-		// if (new RegExp(/^[+-/%*^(),]$/).test(event.key)) {
-		// 	part.type = 'Math'
-		// 	if (event.key === '/') part.value = '÷'
-		// 	if (event.key === '*') part.value = '\u00d7'
 
-		// 	dispatch(insertPart(part))
-		// 	return
-		// }
-		// if (new RegExp(/^[a-zA-Z]$/).test(event.key)) {
-		// 	part.type = 'param'
-		// 	part.value = event.key.toUpperCase()
-		// 	// TODO дописать получение описания
-		// 	part.description = 'Описание'
-		// 	if (activeIndex >= 0 && parts[activeIndex].type === 'param') {
-		// 		// let newParts = [...parts]
-		// 		// newParts[activeIndex].value += part.value
-		// 		// newParts[activeIndex].origValue += part.origValue
-		// 		// setParts(newParts)
-		// 		dispatch(uniteParts(part))
-		// 	} else dispatch(insertPart(part))
-		// 	return
-		// }
+		if (new RegExp(/^[0-9.]$/).test(event.key)) {
+			const part: IPartFormula = { id: Date.now().toString(), type: 'Numeric', value: event.key }
+			dispatch(insertNumeric(part))
+			return
+		}
+		if (new RegExp(/^[+-/%*^(),><=]$/).test(event.key)) {
+			const part: IPartFormula = {
+				id: Date.now().toString(),
+				type: 'Math',
+				value: event.key,
+				origValue: event.key,
+			}
+			if (event.key === '/') part.value = '÷'
+			if (event.key === '*') part.value = '\u00d7'
+
+			dispatch(insertMath(part))
+			return
+		}
+		if (new RegExp(/^[a-zA-Z]$/).test(event.key)) {
+			// TODO дописать получение описания
+			const part: IPartFormula = {
+				id: Date.now().toString(),
+				type: 'Param',
+				value: event.key.toUpperCase(),
+				origValue: event.key,
+				description: 'Описание',
+			}
+			dispatch(insertParam(part))
+			return
+		}
 	}
 
 	return (
@@ -120,9 +130,8 @@ export const NewField: FC<Props> = () => {
 			/>
 
 			<FormulaContainer onClick={selectActiveHandler} onMouseDown={saveFocusHandler}>
-				<NewMath data-id='start' active={activeId === 'start'}>
-					=
-				</NewMath>
+				<NewMath data-id='start'>=</NewMath>
+				<Start data-id='start' active={activeId === 'start'} />
 				<Formula parts={parts} level={1} breadcrumbs='' />
 			</FormulaContainer>
 		</>

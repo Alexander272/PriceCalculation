@@ -14,7 +14,7 @@ export interface IFormula extends IFormulaTitle {
 	parts: IFormulaParts[]
 }
 
-export interface ITestFormula extends IFormulaTitle {
+export interface INewFormula extends IFormulaTitle {
 	groupId: string
 	parts: IPartFormula[]
 }
@@ -24,6 +24,7 @@ export interface IFormulaTitle {
 	title: string
 }
 
+export type StartType = 'Start'
 export type NumericType = 'Numeric'
 export type MathType = 'Math'
 export type ParamType = 'Param'
@@ -34,6 +35,8 @@ export type FormulaPartBase<Type, ExtraProps> = {
 	id: string
 	type: Type
 } & ExtraProps
+
+export type FormulaPartStart = FormulaPartBase<StartType, {}>
 
 export type FormulaPartNumeric = FormulaPartBase<
 	NumericType,
@@ -78,8 +81,9 @@ export type FormulaPartCondition = FormulaPartBase<
 	}
 >
 
-export type IExpFormula = FormulaPartNumeric | FormulaPartMath | FormulaPartParam | FormulaPartFunc
+export type IExpFormula = FormulaPartStart | FormulaPartNumeric | FormulaPartMath | FormulaPartParam | FormulaPartFunc
 export type IPartFormula =
+	| FormulaPartStart
 	| FormulaPartNumeric
 	| FormulaPartMath
 	| FormulaPartParam

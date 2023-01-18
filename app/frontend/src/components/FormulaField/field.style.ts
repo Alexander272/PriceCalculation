@@ -38,6 +38,7 @@ export const FormulaContainer = styled.div`
 	align-items: center;
 	align-content: center;
 	gap: 3px;
+	min-height: 30px;
 `
 
 export const Input = styled.input`
@@ -148,6 +149,14 @@ export const Block = styled.div<SymbolProps>`
 	}
 `
 
+export const Start = styled(Block)<{ isAlone?: boolean; condition?: boolean }>`
+	margin: ${props => (props.isAlone ? '0 1px' : '0')};
+	padding: ${props => (props.isAlone ? '0 3px' : '0')};
+	width: ${props => (props.isAlone ? '12px' : '0')};
+	height: 20px;
+	background-color: ${props => (props.condition ? 'var(--border-color)' : 'var(--white)')};
+`
+
 export const NewMath = styled(Block)`
 	margin: 0 1px;
 	padding: 0 3px;
@@ -231,6 +240,7 @@ export const NewCondition = styled.div<ConditionProps & { active?: boolean }>`
 export const NewConditionLine = styled.div<ConditionProps>`
 	padding: 3px 5px 3px 10px;
 	margin-left: 4px;
+	min-height: 32px;
 	background-color: var(--white);
 	border-radius: 3px;
 	position: relative;

@@ -1,8 +1,8 @@
 import { Button, Tooltip } from '@chakra-ui/react'
 import React, { FC, MouseEvent } from 'react'
 import { useAppDispatch } from '../../../../hooks/useStore'
-import { insertFormula } from '../../../../store/formula'
-import { IFormulaParts } from '../../../../types/formula'
+import { insertCondition, insertFormula, insertMath } from '../../../../store/formula'
+import { FormulaPartCondition, FormulaPartMath, IFormulaParts, IPartFormula } from '../../../../types/formula'
 import { Column, Container } from './group.style'
 
 const functions = [
@@ -95,6 +95,7 @@ const condition = [
 		formula: 'and',
 		color: 'orange',
 		basis: '25%',
+		description: 'x И y',
 	},
 	{
 		id: 'or',
@@ -102,6 +103,7 @@ const condition = [
 		formula: 'or',
 		color: 'orange',
 		basis: '25%',
+		description: 'x Или y',
 	},
 	{
 		id: 'not equal',
@@ -123,41 +125,78 @@ type Props = {}
 export const ButtonGroup: FC<Props> = () => {
 	const dispatch = useAppDispatch()
 
-	const insertHandler = (part: IInsert) => () => {
-		let parts: IFormulaParts[] = [
-			{
-				id: Date.now(),
-				type: 'func',
-				value: part.value + '(',
-				origValue: part.formula + '(',
-			},
-			{
-				id: Date.now() + 1,
-				type: 'func',
-				value: ')',
-				origValue: ')',
-			},
-		]
+	const insertFormulaHandler = (part: IInsert) => () => {
+		// let parts: IFormulaParts[] = [
+		// 	{
+		// 		id: Date.now(),
+		// 		type: 'func',
+		// 		value: part.value + '(',
+		// 		origValue: part.formula + '(',
+		// 	},
+		// 	{
+		// 		id: Date.now() + 1,
+		// 		type: 'func',
+		// 		value: ')',
+		// 		origValue: ')',
+		// 	},
+		// ]
+		// dispatch(insertFormula(parts))
 
-		dispatch(insertFormula(parts))
+		const newPart: IPartFormula = {
+			id: Date.now().toString(),
+			type: 'Func',
+			value: part.value + '(',
+			origValue: part.formula + '(',
+			endValue: ')',
+			children: [
+				{
+					id: Date.now().toString() + 's',
+					type: 'Start',
+				},
+			],
+		}
+		dispatch(insertFormula(newPart))
 	}
 
-	const insertCondition = () => {
-		let parts: IFormulaParts[] = [
-			// { id: Date.now(), type: 'condStart', value: '', origValue: '' },
-			{ id: Date.now() + 1, type: 'condition', value: 'Если (', origValue: 'if (' },
-			{ id: Date.now() + 2, type: 'condition', value: ') {', origValue: ') {' },
-			// { id: Date.now() + 3, type: 'condLine', value: '', origValue: '' },
-			// { id: Date.now() + 4, type: 'condition', value: '}', origValue: '}' },
-			{ id: Date.now() + 5, type: 'condition', value: '} Иначе {', origValue: '} else {' },
-			// { id: Date.now() + 6, type: 'condition', value: '{', origValue: '{' },
-			// { id: Date.now() + 7, type: 'condLine', value: '', origValue: '' },
-			{ id: Date.now() + 8, type: 'condition', value: '}', origValue: '}' },
-			// { id: Date.now() + 9, type: 'condLine', value: '', origValue: '' },
-			// { id: Date.now() + 10, type: 'condEnd', value: '', origValue: '' },
-		]
+	const insertConditionHandler = () => {
+		// let parts: IFormulaParts[] = [
+		// 	// { id: Date.now(), type: 'condStart', value: '', origValue: '' },
+		// 	{ id: Date.now() + 1, type: 'condition', value: 'Если (', origValue: 'if (' },
+		// 	{ id: Date.now() + 2, type: 'condition', value: ') {', origValue: ') {' },
+		// 	// { id: Date.now() + 3, type: 'condLine', value: '', origValue: '' },
+		// 	// { id: Date.now() + 4, type: 'condition', value: '}', origValue: '}' },
+		// 	{ id: Date.now() + 5, type: 'condition', value: '} Иначе {', origValue: '} else {' },
+		// 	// { id: Date.now() + 6, type: 'condition', value: '{', origValue: '{' },
+		// 	// { id: Date.now() + 7, type: 'condLine', value: '', origValue: '' },
+		// 	{ id: Date.now() + 8, type: 'condition', value: '}', origValue: '}' },
+		// 	// { id: Date.now() + 9, type: 'condLine', value: '', origValue: '' },
+		// 	// { id: Date.now() + 10, type: 'condEnd', value: '', origValue: '' },
+		// ]
+		// dispatch(insertFormula(parts))
 
-		dispatch(insertFormula(parts))
+		const newPart: FormulaPartCondition = {
+			id: Date.now().toString(),
+			type: 'Condition',
+			exp: [
+				{
+					id: Date.now().toString() + 'exp',
+					type: 'Start',
+				},
+			],
+			then: [{ id: Date.now().toString() + 'then', type: 'Start' }],
+			else: [{ id: Date.now().toString() + 'else', type: 'Start' }],
+		}
+		dispatch(insertCondition(newPart))
+	}
+
+	const insertMathHandler = (part: IInsert) => () => {
+		const newPart: FormulaPartMath = {
+			id: Date.now().toString(),
+			type: 'Math',
+			value: part.value,
+			origValue: part.formula,
+		}
+		dispatch(insertMath(newPart))
 	}
 
 	const saveFocusHandler = (event: MouseEvent<HTMLButtonElement>) => {
@@ -175,7 +214,7 @@ export const ButtonGroup: FC<Props> = () => {
 							minWidth={'15%'}
 							flexGrow={1}
 							colorScheme={f.color}
-							onClick={insertHandler(f)}
+							onClick={insertFormulaHandler(f)}
 							onMouseDown={saveFocusHandler}
 						>
 							{f.value}
@@ -189,20 +228,23 @@ export const ButtonGroup: FC<Props> = () => {
 					flexGrow={1}
 					colorScheme='linkedin'
 					onMouseDown={saveFocusHandler}
-					onClick={insertCondition}
+					onClick={insertConditionHandler}
 				>
 					Если
 				</Button>
 				{condition.map(c => (
-					<Button
-						key={c.id}
-						flexBasis={c.basis}
-						flexGrow={1}
-						colorScheme={c.color}
-						// onClick={insertHandler(c)}
-					>
-						{c.value}
-					</Button>
+					<Tooltip key={c.id} hasArrow label={c.description}>
+						<Button
+							key={c.id}
+							flexBasis={c.basis}
+							flexGrow={1}
+							colorScheme={c.color}
+							onMouseDown={saveFocusHandler}
+							onClick={insertMathHandler(c)}
+						>
+							{c.value}
+						</Button>
+					</Tooltip>
 				))}
 			</Column>
 		</Container>

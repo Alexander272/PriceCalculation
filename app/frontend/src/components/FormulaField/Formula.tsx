@@ -12,6 +12,7 @@ import {
 	NewConditionLine,
 	NewCondition,
 	NewSymbol,
+	Start,
 } from './field.style'
 
 type Props = {
@@ -31,8 +32,19 @@ export const Formula: FC<Props> = ({ parts, level, breadcrumbs }) => {
 	const activeIdx = useAppSelector(state => state.formula.activeIdx)
 
 	const renderFormula = () => {
-		return parts.map((p, i) => {
+		return parts.map(p => {
 			switch (p.type) {
+				case 'Start':
+					return (
+						<Start
+							key={p.id}
+							data-id={p.id}
+							data-bread={breadcrumbs}
+							active={activeId === p.id}
+							isAlone={parts.length <= 1}
+							condition={breadcrumbs.endsWith('@then/') || breadcrumbs.endsWith('@else/')}
+						/>
+					)
 				case 'Math':
 					return (
 						<NewMath key={p.id} data-id={p.id} data-bread={breadcrumbs} active={activeId === p.id}>
@@ -65,7 +77,13 @@ export const Formula: FC<Props> = ({ parts, level, breadcrumbs }) => {
 					)
 				case 'Func':
 					return (
-						<FuncBlock key={p.id} level={level} active={activeId === p.id}>
+						<FuncBlock
+							data-id={p.id}
+							data-bread={breadcrumbs}
+							key={p.id}
+							level={level}
+							active={activeId === p.id}
+						>
 							<span data-id={p.id} data-bread={breadcrumbs}>
 								{p.value}
 							</span>
@@ -80,7 +98,7 @@ export const Formula: FC<Props> = ({ parts, level, breadcrumbs }) => {
 				case 'Condition':
 					return (
 						<ConditionBlock key={p.id} data-id={p.id}>
-							<NewCondition bgColor={colors[(level % 3) as 1]}>
+							<NewCondition data-id={p.id} data-bread={breadcrumbs} bgColor={colors[(level % 3) as 1]}>
 								<span data-id={p.id} data-bread={breadcrumbs}>
 									Если (
 								</span>
@@ -95,18 +113,31 @@ export const Formula: FC<Props> = ({ parts, level, breadcrumbs }) => {
 									) то {'{'}
 								</span>
 							</NewCondition>
-							<NewConditionLine bgColor={colors[(level % 3) as 1]}>
+							<NewConditionLine
+								data-id={p.id}
+								data-bread={breadcrumbs}
+								bgColor={colors[(level % 3) as 1]}
+							>
 								<Formula parts={p.then} level={level + 1} breadcrumbs={breadcrumbs + p.id + '@then/'} />
 							</NewConditionLine>
-							<NewCondition bgColor={colors[(level % 3) as 1]}>
+							<NewCondition data-id={p.id} data-bread={breadcrumbs} bgColor={colors[(level % 3) as 1]}>
 								<span data-id={p.id} data-bread={breadcrumbs}>
 									{'}'} Иначе {'{'}
 								</span>
 							</NewCondition>
-							<NewConditionLine bgColor={colors[(level % 3) as 1]}>
+							<NewConditionLine
+								data-id={p.id}
+								data-bread={breadcrumbs}
+								bgColor={colors[(level % 3) as 1]}
+							>
 								<Formula parts={p.else} level={level + 1} breadcrumbs={breadcrumbs + p.id + '@else/'} />
 							</NewConditionLine>
-							<NewCondition bgColor={colors[(level % 3) as 1]} active={activeId === p.id}>
+							<NewCondition
+								data-id={p.id}
+								data-bread={breadcrumbs}
+								bgColor={colors[(level % 3) as 1]}
+								active={activeId === p.id}
+							>
 								<span data-id={p.id} data-bread={breadcrumbs}>
 									{'}'}
 								</span>
