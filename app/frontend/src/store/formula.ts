@@ -258,7 +258,16 @@ export const formulaSlice = createSlice({
 		},
 		nextId: state => {
 			if (state.activeId === 'start') {
-				if (state.formula.parts.length > 0) state.activeId = state.formula.parts[0].id
+				if (state.formula.parts.length > 0) {
+					let part = state.formula.parts[0]
+					if (part.type === 'Func') {
+						state.activeId = part.children[0].id
+						state.breadcrumbs += `${part.id}/`
+					} else if (part.type === 'Condition') {
+						state.activeId = part.exp[0].id
+						state.breadcrumbs += `${part.id}@exp/`
+					} else state.activeId = part.id
+				}
 				return
 			}
 
@@ -270,9 +279,25 @@ export const formulaSlice = createSlice({
 			if (part.type === 'Numeric' && (part as FormulaPartNumeric).value.length - 1 > state.activeIdx) {
 				state.activeIdx += 1
 			} else {
-				if (idx === parts.length - 1) return
+				if (idx === parts.length - 1) {
+					if (state.breadcrumbs != '') {
+						const parts = state.breadcrumbs.split('/')
+						state.activeId = parts[parts.length - 2].split('@')[0]
+						state.activeIdx = 0
+						parts.splice(parts.length - 2, 1)
+						state.breadcrumbs = parts.join('/')
+					}
+					return
+				}
 				// TODO учесть наличие дочерних и родительских элементов
-				state.activeId = parts[idx + 1].id
+				part = parts[idx + 1]
+				if (part.type === 'Func') {
+					state.activeId = part.children[0].id
+					state.breadcrumbs += `${part.id}/`
+				} else if (part.type === 'Condition') {
+					state.activeId = part.exp[0].id
+					state.breadcrumbs += `${part.id}@exp/`
+				} else state.activeId = parts[idx + 1].id
 				state.activeIdx = 0
 			}
 		},
@@ -291,11 +316,15 @@ export const formulaSlice = createSlice({
 				state.activeIdx -= 1
 			} else {
 				if (idx === 0) {
-					state.activeId = 'start'
+					if (state.breadcrumbs != '') {
+						const parts = state.breadcrumbs.split('/')
+						state.activeId = parts[parts.length - 2].split('@')[0]
+						parts.splice(parts.length - 2, 1)
+						state.breadcrumbs = parts.join('/')
+					} else state.activeId = 'start'
 					state.activeIdx = 0
 					return
 				}
-				// TODO учесть наличие дочерних и родительских элементов
 				state.activeId = parts[idx - 1].id
 				state.activeIdx = (parts[idx - 1] as FormulaPartNumeric).value?.length - 1 || 0
 			}
@@ -396,10 +425,10 @@ export const formulaSlice = createSlice({
 			let newIndex = 0
 
 			if (!action.payload) {
-				newId = parts[idx >= parts.length - 2 ? parts.length - 2 : idx - 1]?.id || 'start'
+				newId = parts[idx > parts.length - 1 ? parts.length - 2 : idx - 1]?.id || 'start'
 				newIndex = (parts[idx - 1 >= 0 ? idx - 1 : 0] as FormulaPartNumeric)?.value?.length - 1 || 0
 			} else {
-				newId = parts[idx >= parts.length - 1 ? parts.length - 1 : idx]?.id || 'start'
+				newId = parts[idx > parts.length - 1 ? parts.length - 1 : idx]?.id || 'start'
 				newIndex = (parts[idx >= 0 ? idx : 0] as FormulaPartNumeric)?.value?.length - 1 || 0
 				if (idx < parts.length - 1) idx += 1
 			}

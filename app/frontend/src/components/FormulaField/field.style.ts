@@ -1,5 +1,4 @@
 import styled, { keyframes } from 'styled-components'
-import { ConditionType, FormulaPartType } from '../../types/formula'
 
 export const Container = styled.div`
 	padding: 8px 8px;
@@ -59,51 +58,9 @@ const blink = keyframes`
 
 type SymbolProps = {
 	active?: boolean
-	// type: FormulaPartType | ConditionType
 }
 
 export const Symbol = styled.span<SymbolProps>`
-	font-size: 1em;
-	font-weight: 500;
-	position: relative;
-	border-radius: 3px;
-	text-align: center;
-	color: #000;
-
-	&:after {
-		content: '';
-		position: absolute;
-		right: -3px;
-		top: 0;
-		width: 1px;
-		height: 100%;
-		background: #152736;
-		display: ${props => (props.active ? 'block' : 'none')};
-		z-index: 50;
-		animation: ${blink} 1.6s infinite;
-	}
-`
-
-export const Math = styled(Symbol)`
-	margin: 0 4px;
-	padding: 0 4px;
-`
-
-export const Numeric = styled(Symbol)``
-
-export const Param = styled(Symbol)`
-	padding: 3px 5px;
-	background-color: #9dc4ff;
-`
-
-export const Func = styled(Symbol)`
-	margin: 0 3px;
-	padding: 3px 5px;
-	background-color: var(--chakra-colors-messenger-500);
-	color: var(--white);
-`
-
-export const NewSymbol = styled.span<SymbolProps>`
 	position: relative;
 	/* padding: 1px; */
 
@@ -155,24 +112,28 @@ export const Start = styled(Block)<{ isAlone?: boolean; condition?: boolean }>`
 	width: ${props => (props.isAlone ? '12px' : '0')};
 	height: 20px;
 	background-color: ${props => (props.condition ? 'var(--border-color)' : 'var(--white)')};
+
+	&:before {
+		right: 0;
+	}
 `
 
-export const NewMath = styled(Block)`
+export const Math = styled(Block)`
 	margin: 0 1px;
 	padding: 0 3px;
 `
 
-export const NewNumeric = styled(Block)`
-	margin: 1px 2px;
+export const Numeric = styled(Block)`
+	margin: 0px 2px;
 `
 
-export const NewParam = styled(Block)`
+export const Param = styled(Block)`
 	margin: 1px 4px;
 	padding: 0px 5px;
 	background-color: #9dc4ff;
 `
 
-export const NewFunc = styled.div`
+export const Func = styled.div`
 	margin: 0 5px;
 	/* padding: 0px 3px; */
 	background-color: var(--white);
@@ -213,7 +174,7 @@ export type ConditionProps = {
 	bgColor?: string
 }
 
-export const NewCondition = styled.div<ConditionProps & { active?: boolean }>`
+export const Condition = styled.div<ConditionProps & { active?: boolean }>`
 	background-color: ${props => props.bgColor || 'var(--chakra-colors-orange-500)'};
 	color: ${props => (props.bgColor != 'var(--chakra-colors-yellow-400)' ? 'var(--white)' : 'inherit')};
 	padding: 4px 10px;
@@ -237,7 +198,7 @@ export const NewCondition = styled.div<ConditionProps & { active?: boolean }>`
 	}
 `
 
-export const NewConditionLine = styled.div<ConditionProps>`
+export const ConditionLine = styled.div<ConditionProps>`
 	padding: 3px 5px 3px 10px;
 	margin-left: 4px;
 	min-height: 32px;
@@ -256,17 +217,4 @@ export const NewConditionLine = styled.div<ConditionProps>`
 		left: -4px;
 		top: -2px;
 	}
-`
-
-export const ConditionLine = styled.div<ConditionProps>`
-	border-left: 5px solid ${props => props.bgColor || 'var(--chakra-colors-orange-500)'};
-	padding-left: 6px;
-	margin: 0 3px;
-`
-
-export const Condition = styled(Symbol)<ConditionProps>`
-	margin: 0 3px;
-	padding: 3px 5px;
-	background-color: ${props => props.bgColor || 'var(--chakra-colors-orange-500)'};
-	color: ${props => (props.bgColor != 'var(--chakra-colors-yellow-400)' ? 'var(--white)' : 'inherit')};
 `

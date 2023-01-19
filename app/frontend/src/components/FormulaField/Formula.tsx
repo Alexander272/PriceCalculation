@@ -1,17 +1,17 @@
 import { Tooltip } from '@chakra-ui/react'
-import React, { FC } from 'react'
+import { FC } from 'react'
 import { useAppSelector } from '../../hooks/useStore'
 import { IPartFormula } from '../../types/formula'
 import {
 	FuncBlock,
-	NewMath,
-	NewNumeric,
-	NewParam,
-	NewFunc,
+	Math,
+	Numeric,
+	Param,
+	Func,
 	ConditionBlock,
-	NewConditionLine,
-	NewCondition,
-	NewSymbol,
+	ConditionLine,
+	Condition,
+	Symbol,
 	Start,
 } from './field.style'
 
@@ -47,15 +47,15 @@ export const Formula: FC<Props> = ({ parts, level, breadcrumbs }) => {
 					)
 				case 'Math':
 					return (
-						<NewMath key={p.id} data-id={p.id} data-bread={breadcrumbs} active={activeId === p.id}>
+						<Math key={p.id} data-id={p.id} data-bread={breadcrumbs} active={activeId === p.id}>
 							{p.value}
-						</NewMath>
+						</Math>
 					)
 				case 'Numeric':
 					return (
-						<NewNumeric key={p.id}>
+						<Numeric key={p.id}>
 							{p.value.split('').map((n, i) => (
-								<NewSymbol
+								<Symbol
 									key={i}
 									data-id={p.id}
 									data-index={i}
@@ -63,16 +63,16 @@ export const Formula: FC<Props> = ({ parts, level, breadcrumbs }) => {
 									active={activeId === p.id && activeIdx === i}
 								>
 									{n}
-								</NewSymbol>
+								</Symbol>
 							))}
-						</NewNumeric>
+						</Numeric>
 					)
 				case 'Param':
 					return (
 						<Tooltip key={p.id} hasArrow label={p.description} isDisabled={!p.description}>
-							<NewParam data-id={p.id} data-bread={breadcrumbs} active={activeId === p.id}>
+							<Param data-id={p.id} data-bread={breadcrumbs} active={activeId === p.id}>
 								{p.value}
-							</NewParam>
+							</Param>
 						</Tooltip>
 					)
 				case 'Func':
@@ -87,9 +87,9 @@ export const Formula: FC<Props> = ({ parts, level, breadcrumbs }) => {
 							<span data-id={p.id} data-bread={breadcrumbs}>
 								{p.value}
 							</span>
-							<NewFunc>
+							<Func>
 								<Formula parts={p.children} level={level + 1} breadcrumbs={breadcrumbs + p.id + '/'} />
-							</NewFunc>
+							</Func>
 							<span data-id={p.id} data-bread={breadcrumbs}>
 								{p.endValue}
 							</span>
@@ -98,41 +98,33 @@ export const Formula: FC<Props> = ({ parts, level, breadcrumbs }) => {
 				case 'Condition':
 					return (
 						<ConditionBlock key={p.id} data-id={p.id}>
-							<NewCondition data-id={p.id} data-bread={breadcrumbs} bgColor={colors[(level % 3) as 1]}>
+							<Condition data-id={p.id} data-bread={breadcrumbs} bgColor={colors[(level % 3) as 1]}>
 								<span data-id={p.id} data-bread={breadcrumbs}>
 									Если (
 								</span>
-								<NewFunc>
+								<Func>
 									<Formula
 										parts={p.exp}
 										level={level + 1}
 										breadcrumbs={breadcrumbs + p.id + '@exp/'}
 									/>
-								</NewFunc>
+								</Func>
 								<span data-id={p.id} data-bread={breadcrumbs}>
 									) то {'{'}
 								</span>
-							</NewCondition>
-							<NewConditionLine
-								data-id={p.id}
-								data-bread={breadcrumbs}
-								bgColor={colors[(level % 3) as 1]}
-							>
+							</Condition>
+							<ConditionLine data-id={p.id} data-bread={breadcrumbs} bgColor={colors[(level % 3) as 1]}>
 								<Formula parts={p.then} level={level + 1} breadcrumbs={breadcrumbs + p.id + '@then/'} />
-							</NewConditionLine>
-							<NewCondition data-id={p.id} data-bread={breadcrumbs} bgColor={colors[(level % 3) as 1]}>
+							</ConditionLine>
+							<Condition data-id={p.id} data-bread={breadcrumbs} bgColor={colors[(level % 3) as 1]}>
 								<span data-id={p.id} data-bread={breadcrumbs}>
 									{'}'} Иначе {'{'}
 								</span>
-							</NewCondition>
-							<NewConditionLine
-								data-id={p.id}
-								data-bread={breadcrumbs}
-								bgColor={colors[(level % 3) as 1]}
-							>
+							</Condition>
+							<ConditionLine data-id={p.id} data-bread={breadcrumbs} bgColor={colors[(level % 3) as 1]}>
 								<Formula parts={p.else} level={level + 1} breadcrumbs={breadcrumbs + p.id + '@else/'} />
-							</NewConditionLine>
-							<NewCondition
+							</ConditionLine>
+							<Condition
 								data-id={p.id}
 								data-bread={breadcrumbs}
 								bgColor={colors[(level % 3) as 1]}
@@ -141,7 +133,7 @@ export const Formula: FC<Props> = ({ parts, level, breadcrumbs }) => {
 								<span data-id={p.id} data-bread={breadcrumbs}>
 									{'}'}
 								</span>
-							</NewCondition>
+							</Condition>
 						</ConditionBlock>
 					)
 				default:

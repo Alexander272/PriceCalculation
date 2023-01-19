@@ -1,8 +1,10 @@
 import { FC, KeyboardEvent, MouseEvent, useEffect, useRef } from 'react'
+import { useFormula } from '../../hooks/useFormula'
 import { useAppDispatch, useAppSelector } from '../../hooks/useStore'
 import { changeId, deletePart, insertMath, insertNumeric, insertParam, nextId, prevId } from '../../store/formula'
+import { Calculate } from '../../../wailsjs/go/main/App'
 import { FormulaPartNumeric, IPartFormula } from '../../types/formula'
-import { FormulaContainer, Input, NewMath, Start } from './field.style'
+import { FormulaContainer, Input, Math, Start } from './field.style'
 import { Formula } from './Formula'
 
 type Props = {}
@@ -13,6 +15,8 @@ export const NewField: FC<Props> = () => {
 	const parts = useAppSelector(state => state.formula.formula.parts)
 
 	const dispatch = useAppDispatch()
+
+	const { getFormula } = useFormula()
 
 	useEffect(() => {
 		inputRef.current?.focus()
@@ -31,7 +35,6 @@ export const NewField: FC<Props> = () => {
 
 	const selectActiveHandler = (event: MouseEvent<HTMLDivElement>) => {
 		inputRef.current?.focus()
-		console.log((event.target as HTMLDivElement).dataset)
 
 		let newId = parts.length > 0 ? parts[parts.length - 1].id : 'start'
 		let newIdx =
@@ -56,7 +59,7 @@ export const NewField: FC<Props> = () => {
 	const changePartsHandler = async (event: KeyboardEvent<HTMLInputElement>) => {
 		if (event.key === 'Enter') {
 			// let formula = ''
-			// let params: any[] = []
+			let params: any[] = []
 			// parts.forEach(p => {
 			// 	formula += p.origValue
 			// 	if (p.type === 'param') {
@@ -69,6 +72,10 @@ export const NewField: FC<Props> = () => {
 
 			// const result = await Calculate({ Formula: formula, Params: params })
 			// console.log(result)
+			const formula = getFormula(parts)
+			console.log(formula)
+			const result = await Calculate({ Formula: formula, Params: params })
+			console.log(result)
 			return
 		}
 
@@ -130,7 +137,7 @@ export const NewField: FC<Props> = () => {
 			/>
 
 			<FormulaContainer onClick={selectActiveHandler} onMouseDown={saveFocusHandler}>
-				<NewMath data-id='start'>=</NewMath>
+				<Math data-id='start'>=</Math>
 				<Start data-id='start' active={activeId === 'start'} />
 				<Formula parts={parts} level={1} breadcrumbs='' />
 			</FormulaContainer>
