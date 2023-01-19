@@ -1,6 +1,9 @@
 package services
 
-import "github.com/Alexander272/price_calculation/models"
+import (
+	"github.com/Alexander272/price_calculation/internal/repo"
+	"github.com/Alexander272/price_calculation/models"
+)
 
 type Calculation interface {
 	Calculate(models.CalculateRequest) (float64, error)
@@ -15,7 +18,7 @@ type Services struct {
 	Params
 }
 
-func NewService() *Services {
+func NewService(repo *repo.Repo) *Services {
 	params := NewParamsService()
 
 	return &Services{

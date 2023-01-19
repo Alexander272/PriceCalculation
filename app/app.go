@@ -4,8 +4,10 @@ import (
 	"context"
 
 	"github.com/Alexander272/price_calculation/internal/configs"
+	"github.com/Alexander272/price_calculation/internal/repo"
 	"github.com/Alexander272/price_calculation/internal/services"
 	"github.com/Alexander272/price_calculation/models"
+	"github.com/jmoiron/sqlx"
 )
 
 // App struct
@@ -17,9 +19,11 @@ type App struct {
 
 // NewApp creates a new App application struct
 func NewApp() *App {
+	repo := repo.NewRepo(&sqlx.DB{})
+
 	return &App{
 		config:   *configs.Init(),
-		services: services.NewService(),
+		services: services.NewService(repo),
 	}
 }
 
