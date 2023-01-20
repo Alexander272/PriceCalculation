@@ -1,8 +1,8 @@
 import { Button, Tooltip } from '@chakra-ui/react'
-import React, { FC, MouseEvent } from 'react'
-import { useAppDispatch } from '../../../../hooks/useStore'
-import { insertCondition, insertFormula, insertMath } from '../../../../store/formula'
-import { FormulaPartCondition, FormulaPartMath, IFormulaParts, IPartFormula } from '../../../../types/formula'
+import { FC, MouseEvent } from 'react'
+import { useAppDispatch } from '@/hooks/useStore'
+import { insertCondition, insertFormula, insertMath } from '@/store/formula'
+import { FormulaPartCondition, FormulaPartMath, IPartFormula } from '@/types/formula'
 import { Column, Container } from './group.style'
 
 const functions = [

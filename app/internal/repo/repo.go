@@ -7,7 +7,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-type Table interface {
+type TablesList interface {
 	GetAll() ([]models.Table, error)
 	Create(models.Table) error
 	Delete(uuid.UUID, string) error
@@ -20,14 +20,23 @@ type Field interface {
 	Delete(id uuid.UUID, tableName, columnName string) error
 }
 
+type Common interface {
+	GetAll(table models.Table) (data []interface{}, err error)
+	Create(line models.Data) error
+	Update(line models.Data) error
+	Delete(tableName string, id uuid.UUID) error
+}
+
 type Repo struct {
-	Table
+	TablesList
 	Field
+	Common
 }
 
 func NewRepo(db *sqlx.DB) *Repo {
 	return &Repo{
-		Table: postgres.NewTableRepo(db),
-		Field: postgres.NewFieldRepo(db),
+		TablesList: postgres.NewTableListRepo(db),
+		Field:      postgres.NewFieldRepo(db),
+		Common:     postgres.NewCommonRepo(db),
 	}
 }

@@ -1,8 +1,8 @@
 import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from '@chakra-ui/react'
 import { FC, useEffect, useState } from 'react'
-import { Error } from '../../components/Error/Error'
-import { IFormulaTitle } from '../../types/formula'
-import { IGroup } from '../../types/group'
+import { Error } from '@/components/Error/Error'
+import { IFormulaTitle } from '@/types/formula'
+import { IGroup } from '@/types/group'
 import { LinkItem } from './group.style'
 
 type Props = {

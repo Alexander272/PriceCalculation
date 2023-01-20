@@ -1,7 +1,7 @@
 import { Tooltip } from '@chakra-ui/react'
 import { FC } from 'react'
-import { useAppSelector } from '../../hooks/useStore'
-import { IPartFormula } from '../../types/formula'
+import { useAppSelector } from '@/hooks/useStore'
+import { IPartFormula } from '@/types/formula'
 import {
 	FuncBlock,
 	Math,

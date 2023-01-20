@@ -1,4 +1,4 @@
-import { IPartFormula } from '../types/formula'
+import { IPartFormula } from '@/types/formula'
 
 export const useFormula = () => {
 	const getFormula = (parts: IPartFormula[]) => {

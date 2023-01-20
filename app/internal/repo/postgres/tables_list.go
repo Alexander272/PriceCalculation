@@ -1,7 +1,6 @@
 package postgres
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 
@@ -10,12 +9,12 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-type TableRepo struct {
+type TableListRepo struct {
 	db *sqlx.DB
 }
 
-func NewTableRepo(db *sqlx.DB) *TableRepo {
-	return &TableRepo{db: db}
+func NewTableListRepo(db *sqlx.DB) *TableListRepo {
+	return &TableListRepo{db: db}
 }
 
 type Table struct {
@@ -34,11 +33,11 @@ type Table struct {
 	Default     string    `db:"default"`
 }
 
-func (r *TableRepo) GetAll() (tables []models.Table, err error) {
+func (r *TableListRepo) GetAll() (tables []models.Table, err error) {
 	query := fmt.Sprintf(`SELECT id, title, alias, color, %s.id as field_id, %s.title as field_title, 
 		type_db, type_app, concat(alias, number) as number, is_for_search, formula, is_not_null, default
 		FROM %s INNER JOIN %s ON %s.id=table_id`,
-		Tables, Fields, Tables, Fields, Fields,
+		TablesListTable, FieldsTable, TablesListTable, FieldsTable, FieldsTable,
 	)
 
 	t := []Table{}
@@ -85,7 +84,7 @@ func (r *TableRepo) GetAll() (tables []models.Table, err error) {
 	return tables, nil
 }
 
-func (r *TableRepo) Create(table models.Table) error {
+func (r *TableListRepo) Create(table models.Table) error {
 	fields := []string{}
 	for _, f := range table.Fields {
 		line := fmt.Sprintf("%s %s", f.Title, f.TypeDb)
@@ -106,27 +105,25 @@ func (r *TableRepo) Create(table models.Table) error {
 		return fmt.Errorf("не удалось создать таблицу. ошибка: %w", err)
 	}
 
-	query := fmt.Sprintf("INSERT INTO %s (id, title, alias, color) VALUES ($1, $2, $3, $4)", Tables)
+	query := fmt.Sprintf("INSERT INTO %s (id, title, alias, color) VALUES ($1, $2, $3, $4)", TablesListTable)
 
 	id := uuid.New()
 	if _, err := r.db.Exec(query, id, table.Title, table.Alias, table.Color); err != nil {
 		return fmt.Errorf("не удалось добавить таблицу. ошибка: %w", err)
 	}
-
-	return errors.New("not implemented")
+	return nil
 }
 
-func (r *TableRepo) Delete(id uuid.UUID, table string) error {
+func (r *TableListRepo) Delete(id uuid.UUID, table string) error {
 	delete := fmt.Sprintf("DROP TABLE IF EXISTS %s", table)
 	if _, err := r.db.Exec(delete); err != nil {
 		return fmt.Errorf("не удалось удалить таблицу. ошибка: %w", err)
 	}
 
-	query := fmt.Sprintf("DELETE FROM %s WHERE di=$1", Tables)
+	query := fmt.Sprintf("DELETE FROM %s WHERE di=$1", TablesListTable)
 
 	if _, err := r.db.Exec(query, id); err != nil {
 		return fmt.Errorf("не удалось удалить запись о таблице. ошибка: %w", err)
 	}
-
-	return errors.New("not implemented")
+	return nil
 }

@@ -1,8 +1,8 @@
 import { Spinner, useDisclosure } from '@chakra-ui/react'
 import { FC, useState } from 'react'
-import { Error } from '../../components/Error/Error'
-import { useAppSelector } from '../../hooks/useStore'
-import { IGroup } from '../../types/group'
+import { Error } from '@/components/Error/Error'
+import { useAppSelector } from '@/hooks/useStore'
+import { IGroup } from '@/types/group'
 import { FormulasList } from './FormulasList'
 import { GroupItem } from './group.style'
 

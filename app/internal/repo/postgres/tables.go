@@ -1,6 +1,6 @@
 package postgres
 
 const (
-	Tables = "tables"
-	Fields = "fields"
+	TablesListTable = "tables_list"
+	FieldsTable     = "fields"
 )

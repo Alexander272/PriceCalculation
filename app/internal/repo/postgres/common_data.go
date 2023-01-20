@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/Alexander272/price_calculation/models"
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -44,7 +45,12 @@ func (r *CommonRepo) Create(line models.Data) error {
 	for i, l := range line.Data {
 		columns = append(columns, l.Title)
 		values = append(values, fmt.Sprintf("$%d", i+1))
-		args = append(args, l.Value)
+		if l.Title == "id" {
+			id := uuid.New()
+			args = append(args, id)
+		} else {
+			args = append(args, l.Value)
+		}
 	}
 
 	query := fmt.Sprintf("INSERT INTO %s (%s) VALUES (%s)", line.TableName, strings.Join(columns, ","), strings.Join(values, ","))
@@ -56,10 +62,36 @@ func (r *CommonRepo) Create(line models.Data) error {
 	return nil
 }
 
-func (r *CommonRepo) Update() error {
-	return fmt.Errorf("not implemented")
+func (r *CommonRepo) Update(line models.Data) error {
+	values := make([]string, 0, len(line.Data))
+	args := make([]interface{}, 0)
+
+	count := 1
+	var id interface{}
+	for _, l := range line.Data {
+		if l.Title != "id" {
+			values = append(values, fmt.Sprintf("%s=$%d", l.Title, count))
+			count += 1
+			args = append(args, l.Value)
+		} else {
+			id = l.Value
+		}
+	}
+	args = append(args, id)
+
+	query := fmt.Sprintf(`UPDATE %s	SET %s WHERE id=$%d`, line.TableName, strings.Join(values, ", "), count)
+
+	if _, err := r.db.Exec(query, args...); err != nil {
+		return fmt.Errorf("не удалось обновить данные. ошибка: %w", err)
+	}
+	return nil
 }
 
-func (r *CommonRepo) Delete() error {
-	return fmt.Errorf("not implemented")
+func (r *CommonRepo) Delete(tableName string, id uuid.UUID) error {
+	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", tableName)
+
+	if _, err := r.db.Exec(query, id); err != nil {
+		return fmt.Errorf("не удалось удалить данные. ошибка: %w", err)
+	}
+	return nil
 }

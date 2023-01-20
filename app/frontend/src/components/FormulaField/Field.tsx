@@ -1,5 +1,5 @@
 import React, { FC, KeyboardEvent, MouseEvent, useEffect, useRef, useState } from 'react'
-import { IFormulaParts } from '../../types/formula'
+import { IFormulaParts } from '@/types/formula'
 import {
 	Condition,
 	ConditionBlock,
@@ -12,9 +12,9 @@ import {
 	Param,
 	Symbol,
 } from './field.style'
-// import { changeIndex, deletePart, insertPart, uniteParts } from '../../store/formula'
-import { Calculate } from '../../../wailsjs/go/main/App'
-import { useAppDispatch, useAppSelector } from '../../hooks/useStore'
+// import { changeIndex, deletePart, insertPart, uniteParts } from '@/store/formula'
+import { Calculate } from '@/../wailsjs/go/root/App'
+import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
 import { Tooltip } from '@chakra-ui/react'
 
 type Props = {

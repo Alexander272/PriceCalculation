@@ -1,6 +1,6 @@
 package models
 
 type CalculateRequest struct {
-	Formula string
-	Params  []Params
+	Formula string   `json:"formula"`
+	Params  []Params `json:"params"`
 }

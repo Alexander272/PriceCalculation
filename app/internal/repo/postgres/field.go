@@ -32,7 +32,7 @@ func (r *FieldRepo) Create(field models.Field, tableName string) error {
 	}
 
 	query := fmt.Sprintf(`INSERT INTO %s (id, table_id, title, type_db, type_app, number, is_for_search, formula, is_not_null, default) 
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`, Fields)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`, FieldsTable)
 
 	id := uuid.New()
 	_, err := r.db.Exec(query, id, field.TableId, field.Title, field.TypeDb, field.TypeApp, field.Number, field.IsForSearch,
@@ -44,7 +44,7 @@ func (r *FieldRepo) Create(field models.Field, tableName string) error {
 }
 
 func (r *FieldRepo) CreateSeveral(fields []models.Field) error {
-	query := fmt.Sprintf("INSERT INTO %s (id, table_id, title, type_db, type_app, number, is_for_search, formula, is_not_null, default) VALUES ", Fields)
+	query := fmt.Sprintf("INSERT INTO %s (id, table_id, title, type_db, type_app, number, is_for_search, formula, is_not_null, default) VALUES ", FieldsTable)
 
 	args := make([]interface{}, 0)
 	values := make([]string, 0, len(fields))
@@ -75,7 +75,7 @@ func (r *FieldRepo) Delete(id uuid.UUID, tableName, columnName string) error {
 		return fmt.Errorf("не удалось удалить колонку. ошибка: %w", err)
 	}
 
-	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", Fields)
+	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", FieldsTable)
 	if _, err := r.db.Exec(query, id); err != nil {
 		return fmt.Errorf("не удалось удалить запись о колонке. ошибка: %w", err)
 	}

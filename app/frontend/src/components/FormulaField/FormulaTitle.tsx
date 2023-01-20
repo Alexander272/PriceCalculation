@@ -1,6 +1,6 @@
 import { FC } from 'react'
-import { useAppDispatch, useAppSelector } from '../../hooks/useStore'
-import { setTitle } from '../../store/formula'
+import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
+import { setTitle } from '@/store/formula'
 import { Title } from './field.style'
 
 type Props = {}

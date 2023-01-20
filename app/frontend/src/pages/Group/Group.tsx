@@ -14,6 +14,7 @@ export default function Group() {
 				<Formulas />
 			</Column>
 			<Column>
+				{/* //TODO данные специфичные для каждой группы (разбитые по этим группам) */}
 				<ColumnTitle></ColumnTitle>
 			</Column>
 		</Container>

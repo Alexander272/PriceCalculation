@@ -4,7 +4,7 @@ type GetParams struct {
 }
 
 type Params struct {
-	Id    string
-	Name  string
-	Value float64
+	Id    string  `json:"id"`
+	Name  string  `json:"name"`
+	Value float64 `json:"value"`
 }
