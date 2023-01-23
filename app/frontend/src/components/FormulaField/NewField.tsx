@@ -1,8 +1,18 @@
 import { FC, KeyboardEvent, MouseEvent, useEffect, useRef } from 'react'
 import { useFormula } from '@/hooks/useFormula'
 import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
-import { changeId, deletePart, insertMath, insertNumeric, insertParam, nextId, prevId } from '@/store/formula'
+import {
+	changeId,
+	deletePart,
+	insertMath,
+	insertNumeric,
+	insertParam,
+	nextId,
+	prevId,
+	setResult,
+} from '@/store/formula'
 import { Calculate } from '@/../wailsjs/go/root/App'
+import { models } from '@/../wailsjs/go/models'
 import { FormulaPartNumeric, IPartFormula } from '@/types/formula'
 import { FormulaContainer, Input, Math, Start } from './field.style'
 import { Formula } from './Formula'
@@ -58,23 +68,18 @@ export const NewField: FC<Props> = () => {
 
 	const changePartsHandler = async (event: KeyboardEvent<HTMLInputElement>) => {
 		if (event.key === 'Enter') {
-			// let formula = ''
 			let params: any[] = []
-			// parts.forEach(p => {
-			// 	formula += p.origValue
-			// 	if (p.type === 'param') {
-			// 		params.push({
-			// 			Id: p.id.toString(),
-			// 			Name: p.origValue,
-			// 		})
-			// 	}
-			// })
 
-			// const result = await Calculate({ Formula: formula, Params: params })
-			// console.log(result)
 			const formula = getFormula(parts)
 			console.log(formula)
-			const result = await Calculate({ Formula: formula, Params: params })
+
+			const result = await Calculate(
+				new models.CalculateRequest({
+					formula: formula,
+					params: params,
+				})
+			)
+			dispatch(setResult(result))
 			console.log(result)
 			return
 		}
@@ -131,7 +136,6 @@ export const NewField: FC<Props> = () => {
 				ref={inputRef}
 				value=''
 				onKeyDown={changePartsHandler}
-				// onFocus={focusHandler}
 				onBlur={clearFocusHandler}
 				onChange={() => {}}
 			/>

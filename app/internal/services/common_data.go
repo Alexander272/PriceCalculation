@@ -3,7 +3,6 @@ package services
 import (
 	"github.com/Alexander272/price_calculation/internal/repo"
 	"github.com/Alexander272/price_calculation/models"
-	"github.com/google/uuid"
 )
 
 type CommonService struct {
@@ -36,7 +35,7 @@ func (s *CommonService) Update(line models.Data) error {
 	return nil
 }
 
-func (s *CommonService) Delete(tableName string, id uuid.UUID) error {
+func (s *CommonService) Delete(tableName string, id string) error {
 	if err := s.repo.Delete(tableName, id); err != nil {
 		return err
 	}

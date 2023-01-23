@@ -87,7 +87,7 @@ func (r *CommonRepo) Update(line models.Data) error {
 	return nil
 }
 
-func (r *CommonRepo) Delete(tableName string, id uuid.UUID) error {
+func (r *CommonRepo) Delete(tableName string, id string) error {
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", tableName)
 
 	if _, err := r.db.Exec(query, id); err != nil {

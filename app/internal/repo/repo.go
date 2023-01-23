@@ -9,22 +9,22 @@ import (
 
 type TablesList interface {
 	GetAll() ([]models.Table, error)
-	Create(models.Table) error
-	Delete(uuid.UUID, string) error
+	Create(models.Table, uuid.UUID) error
+	Delete(string, string) error
 }
 
 type Field interface {
 	Create(models.Field, string) error
-	CreateSeveral([]models.Field) error
+	CreateSeveral([]models.Field, uuid.UUID) error
 	Update(models.Field) error
-	Delete(id uuid.UUID, tableName, columnName string) error
+	Delete(id string, tableName, columnName string) error
 }
 
 type Common interface {
 	GetAll(table models.Table) (data []interface{}, err error)
 	Create(line models.Data) error
 	Update(line models.Data) error
-	Delete(tableName string, id uuid.UUID) error
+	Delete(tableName string, id string) error
 }
 
 type Repo struct {

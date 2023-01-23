@@ -31,11 +31,11 @@ func (r *FieldRepo) Create(field models.Field, tableName string) error {
 		return fmt.Errorf("не удалось создать колонку. ошибка: %w", err)
 	}
 
-	query := fmt.Sprintf(`INSERT INTO %s (id, table_id, title, type_db, type_app, number, is_for_search, formula, is_not_null, default) 
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`, FieldsTable)
+	query := fmt.Sprintf(`INSERT INTO %s (id, table_id, title, name, type_db, type_app, number, is_for_search, formula, is_not_null, "default") 
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`, FieldsTable)
 
 	id := uuid.New()
-	_, err := r.db.Exec(query, id, field.TableId, field.Title, field.TypeDb, field.TypeApp, field.Number, field.IsForSearch,
+	_, err := r.db.Exec(query, id, field.TableId, field.Title, field.Name, field.TypeDb, field.TypeApp, field.Number, field.IsForSearch,
 		field.Formula, field.IsNotNull, field.Default)
 	if err != nil {
 		return fmt.Errorf("не удалось добавить колонку. ошибка: %w", err)
@@ -43,18 +43,18 @@ func (r *FieldRepo) Create(field models.Field, tableName string) error {
 	return nil
 }
 
-func (r *FieldRepo) CreateSeveral(fields []models.Field) error {
-	query := fmt.Sprintf("INSERT INTO %s (id, table_id, title, type_db, type_app, number, is_for_search, formula, is_not_null, default) VALUES ", FieldsTable)
+func (r *FieldRepo) CreateSeveral(fields []models.Field, tableId uuid.UUID) error {
+	query := fmt.Sprintf(`INSERT INTO %s (id, table_id, title, name, type_db, type_app, number, is_for_search, formula, is_not_null, "default") VALUES `, FieldsTable)
 
 	args := make([]interface{}, 0)
 	values := make([]string, 0, len(fields))
 
-	c := 10
+	c := 11
 	for i, f := range fields {
-		values = append(values, fmt.Sprintf("($%d, $%d, $%d, $%d, $%d, $%d, $%d, $%d, $%d, $%d)",
-			i*c+1, i*c+2, i*c+3, i*c+4, i*c+5, i*c+6, i*c+7, i*c+8, i*c+9, i*c+10))
+		values = append(values, fmt.Sprintf("($%d, $%d, $%d, $%d, $%d, $%d, $%d, $%d, $%d, $%d, $%d)",
+			i*c+1, i*c+2, i*c+3, i*c+4, i*c+5, i*c+6, i*c+7, i*c+8, i*c+9, i*c+10, i*c+11))
 		id := uuid.New()
-		args = append(args, id, f.TableId, f.Title, f.TypeDb, f.TypeApp, f.Number, f.IsForSearch, f.Formula, f.IsNotNull, f.Default)
+		args = append(args, id, tableId, f.Title, f.Name, f.TypeDb, f.TypeApp, f.Number, f.IsForSearch, f.Formula, f.IsNotNull, f.Default)
 	}
 	query += strings.Join(values, ", ")
 
@@ -69,7 +69,7 @@ func (r *FieldRepo) Update(field models.Field) error {
 	return errors.New("not implemented")
 }
 
-func (r *FieldRepo) Delete(id uuid.UUID, tableName, columnName string) error {
+func (r *FieldRepo) Delete(id string, tableName, columnName string) error {
 	delete := fmt.Sprintf("ALTER TABLE %s DROP COLUMN %s", tableName, columnName)
 	if _, err := r.db.Exec(delete); err != nil {
 		return fmt.Errorf("не удалось удалить колонку. ошибка: %w", err)

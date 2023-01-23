@@ -9,20 +9,20 @@ import (
 type TablesList interface {
 	GetAll() ([]models.Table, error)
 	Create(table models.Table) error
-	Delete(id uuid.UUID, table string) error
+	Delete(id string, table string) error
 }
 
 type Fields interface {
 	Create(field models.Field, tableName string) error
-	CreateSeveral(fields []models.Field) error
-	Delete(id uuid.UUID, tableName, columnName string) error
+	CreateSeveral(fields []models.Field, tableId uuid.UUID) error
+	Delete(id string, tableName, columnName string) error
 }
 
 type Common interface {
 	GetAll(table models.Table) ([]interface{}, error)
 	Create(line models.Data) error
 	Update(line models.Data) error
-	Delete(tableName string, id uuid.UUID) error
+	Delete(tableName string, id string) error
 }
 
 type Calculation interface {

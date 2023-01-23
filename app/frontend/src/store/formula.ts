@@ -5,8 +5,6 @@ import type {
 	FormulaPartNumeric,
 	FormulaPartParam,
 	INewFormula,
-	IFormulaParts,
-	IPartFormula,
 	FormulaPartFunc,
 	FormulaPartCondition,
 } from '../types/formula'
@@ -14,208 +12,14 @@ import type {
 export interface IFormulasState {
 	loading: boolean
 	error: string | null
-	// formula: IFormula
 	formula: INewFormula
 	activeIndex: number
 	activeIdx: number
 	activeId: string
 	deleteCount: number
 	breadcrumbs: string
+	result: number | null
 }
-
-const test: IPartFormula[] = [
-	{
-		id: '1',
-		type: 'Numeric',
-		value: '15',
-	},
-	{
-		id: '2',
-		type: 'Math',
-		value: '+',
-		origValue: '+',
-	},
-	{
-		id: '3',
-		type: 'Param',
-		value: 'A',
-		origValue: 'a',
-		description: 'description',
-	},
-	{
-		id: '4',
-		type: 'Math',
-		value: '+',
-		origValue: '+',
-	},
-	{
-		id: '5',
-		type: 'Func',
-		value: 'ОКРВВЕРХ(',
-		origValue: 'ceil(',
-		endValue: ')',
-		children: [
-			{ id: '6', type: 'Start' },
-			{
-				id: '7',
-				type: 'Numeric',
-				value: '14.54',
-			},
-			{
-				id: '8',
-				type: 'Math',
-				value: '×',
-				origValue: '*',
-			},
-			{
-				id: '9',
-				type: 'Numeric',
-				value: '10',
-			},
-		],
-	},
-	{
-		id: '10',
-		type: 'Math',
-		value: '÷',
-		origValue: '/',
-	},
-	{
-		id: '11',
-		type: 'Numeric',
-		value: '10',
-	},
-	{
-		id: '12',
-		type: 'Math',
-		value: '-',
-		origValue: '-',
-	},
-	{
-		id: '13',
-		type: 'Func',
-		value: 'ОКРУГТ(',
-		origValue: 'roundn(',
-		endValue: ')',
-		children: [
-			{ id: '14', type: 'Start' },
-			{
-				id: '15',
-				type: 'Numeric',
-				value: '12.4567',
-			},
-			{
-				id: '16',
-				type: 'Math',
-				value: ',',
-				origValue: ',',
-			},
-			{
-				id: '17',
-				type: 'Numeric',
-				value: '2',
-			},
-		],
-	},
-	{
-		id: '18',
-		type: 'Math',
-		value: '×',
-		origValue: '*',
-	},
-	{
-		id: '19',
-		type: 'Func',
-		value: 'ОКРВНИЗ(',
-		origValue: 'floor(',
-		endValue: ')',
-		children: [
-			{ id: '20', type: 'Start' },
-			{
-				id: '21',
-				type: 'Func',
-				value: 'МОД(',
-				origValue: 'abs(',
-				endValue: ')',
-				children: [
-					{ id: '22', type: 'Start' },
-					{
-						id: '23',
-						type: 'Math',
-						value: '-',
-						origValue: '-',
-					},
-					{
-						id: '24',
-						type: 'Numeric',
-						value: '1.54',
-					},
-				],
-			},
-		],
-	},
-	{
-		id: '25',
-		type: 'Math',
-		value: '-',
-		origValue: '-',
-	},
-	{
-		id: '26',
-		type: 'Condition',
-		exp: [
-			{
-				id: '27',
-				type: 'Start',
-			},
-			{
-				id: '28',
-				type: 'Param',
-				value: 'B',
-				origValue: 'b',
-				description: 'Description',
-			},
-			{
-				id: '29',
-				type: 'Math',
-				value: '>',
-				origValue: '>',
-			},
-			{
-				id: '30',
-				type: 'Numeric',
-				value: '15',
-			},
-		],
-		then: [
-			{ id: '31', type: 'Start' },
-			{
-				id: '32',
-				type: 'Numeric',
-				value: '10',
-			},
-		],
-		else: [
-			{ id: '33', type: 'Start' },
-			{
-				id: '34',
-				type: 'Numeric',
-				value: '20',
-			},
-		],
-	},
-	{
-		id: '34',
-		type: 'Math',
-		value: '-',
-		origValue: '-',
-	},
-	{
-		id: '35',
-		type: 'Numeric',
-		value: '1.54',
-	},
-]
 
 const initialState: IFormulasState = {
 	loading: false,
@@ -225,12 +29,8 @@ const initialState: IFormulasState = {
 	activeId: 'start',
 	breadcrumbs: '',
 	deleteCount: 0,
-	// formula: {
-	// 	id: '',
-	// 	groupId: '',
-	// 	title: '',
-	// 	parts: [],
-	// },
+	result: null,
+
 	formula: {
 		id: '',
 		groupId: '',
@@ -460,6 +260,10 @@ export const formulaSlice = createSlice({
 			}
 		},
 
+		setResult: (state, action: PayloadAction<number>) => {
+			state.result = action.payload
+		},
+
 		// insertPart: (state, action: PayloadAction<IFormulaParts>) => {
 		// 	state.formula.parts.splice(state.activeIndex > -1 ? state.activeIndex + 1 : 0, 0, action.payload)
 		// 	state.activeIndex += 1
@@ -506,6 +310,7 @@ export const {
 	insertFormula,
 	insertCondition,
 	deletePart,
+	setResult,
 
 	// insertPart,
 	// deletePart,

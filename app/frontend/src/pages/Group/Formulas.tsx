@@ -4,7 +4,7 @@ import { Error } from '@/components/Error/Error'
 import { useAppSelector } from '@/hooks/useStore'
 import { IGroup } from '@/types/group'
 import { FormulasList } from './FormulasList'
-import { GroupItem } from './group.style'
+import { GroupItem, List, ListItem } from './group.style'
 
 type Props = {}
 
@@ -22,20 +22,27 @@ export const Formulas: FC<Props> = () => {
 		onOpen()
 	}
 
-	if (error) return <Error message='Не удалось загрузить данные' description={error} />
+	// if (error) return <Error message='Не удалось загрузить данные' description={error} />
 	return (
 		<>
 			<FormulasList isOpen={isOpen} onClose={onClose} group={group} />
 
-			{loading && !groups ? (
+			{/* {loading && !groups ? (
 				<Spinner color='blue.500' />
-			) : (
-				groups.map(g => (
+			) : ( */}
+			{/* groups.map(g => (
 					<GroupItem key={g.id} onClick={openHandler(g)}>
 						{g.title}
 					</GroupItem>
-				))
-			)}
+				)) */}
+			{/* )} */}
+			<List>
+				{groups.map(g => (
+					<ListItem key={g.id} onClick={openHandler(g)}>
+						{g.title}
+					</ListItem>
+				))}
+			</List>
 		</>
 	)
 }
