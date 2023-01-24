@@ -6,10 +6,6 @@ export function Calculate(arg1) {
   return window['go']['root']['App']['Calculate'](arg1);
 }
 
-export function CreateData(arg1) {
-  return window['go']['root']['App']['CreateData'](arg1);
-}
-
 export function CreateNewField(arg1, arg2) {
   return window['go']['root']['App']['CreateNewField'](arg1, arg2);
 }
@@ -18,8 +14,8 @@ export function CreateTable(arg1) {
   return window['go']['root']['App']['CreateTable'](arg1);
 }
 
-export function Delete(arg1, arg2) {
-  return window['go']['root']['App']['Delete'](arg1, arg2);
+export function CreateTableData(arg1) {
+  return window['go']['root']['App']['CreateTableData'](arg1);
 }
 
 export function DeleteField(arg1, arg2, arg3) {
@@ -30,14 +26,18 @@ export function DeleteTable(arg1, arg2) {
   return window['go']['root']['App']['DeleteTable'](arg1, arg2);
 }
 
-export function GetAllData(arg1) {
-  return window['go']['root']['App']['GetAllData'](arg1);
+export function DeleteTableData(arg1, arg2) {
+  return window['go']['root']['App']['DeleteTableData'](arg1, arg2);
+}
+
+export function GetAllTableData(arg1) {
+  return window['go']['root']['App']['GetAllTableData'](arg1);
 }
 
 export function GetAllTables() {
   return window['go']['root']['App']['GetAllTables']();
 }
 
-export function UpdateData(arg1) {
-  return window['go']['root']['App']['UpdateData'](arg1);
+export function UpdateTableData(arg1) {
+  return window['go']['root']['App']['UpdateTableData'](arg1);
 }

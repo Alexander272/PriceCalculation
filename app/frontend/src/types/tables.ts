@@ -1,6 +1,9 @@
+import ReactDataSheet from 'react-datasheet'
+
 export interface ITable {
 	id: string
 	title: string
+	titleDb: string
 	alias: string
 	color?: string
 	fields: IField[]
@@ -10,6 +13,7 @@ export interface IField {
 	id: string
 	tableId: string
 	title: string
+	titleDb: string
 	typeDb: string
 	typeApp: string
 	number: string
@@ -17,4 +21,8 @@ export interface IField {
 	formula: string
 	isNotNull: boolean
 	default: string
+}
+
+export interface IData extends ReactDataSheet.Cell<IData, string> {
+	value: any
 }

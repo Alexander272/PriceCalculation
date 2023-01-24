@@ -182,7 +182,7 @@ export const formulaSlice = createSlice({
 			if (parts[idx].type === 'Numeric') return
 
 			if (parts[idx].type === 'Param') {
-				;(parts[idx] as FormulaPartParam).value = action.payload.value
+				;(parts[idx] as FormulaPartParam).value += action.payload.value
 
 				if (parts[idx].type === 'Param') {
 					;(parts[idx] as FormulaPartParam).origValue += action.payload.origValue

@@ -19,7 +19,7 @@ func NewFieldRepo(db *sqlx.DB) *FieldRepo {
 }
 
 func (r *FieldRepo) Create(field models.Field, tableName string) error {
-	create := fmt.Sprintf(`ALTER TABLE %s ADD %s %s`, tableName, field.Title, field.TypeDb)
+	create := fmt.Sprintf(`ALTER TABLE %s ADD %s %s`, tableName, field.Name, field.TypeDb)
 	if field.IsNotNull {
 		create += " NOT NULL"
 	}

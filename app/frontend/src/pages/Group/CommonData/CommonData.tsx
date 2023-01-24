@@ -1,20 +1,30 @@
 import { FC, useEffect } from 'react'
 import { Button, useDisclosure } from '@chakra-ui/react'
-import { useAppSelector } from '@/hooks/useStore'
+import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
 import { AddCommonModal } from '@/components/AddCommonModal/AddCommonModal'
 import { fetchData } from '@/store/groups'
 import { ListItem, List } from '../group.style'
+import { models } from '@/../wailsjs/go/models'
+import { setActiveTable } from '@/store/table'
+import { useNavigate } from 'react-router-dom'
 
 type Props = {}
 
 export const CommonData: FC<Props> = () => {
 	const tables = useAppSelector(state => state.group.tables)
+	const dispatch = useAppDispatch()
+	const navigate = useNavigate()
+
+	const { isOpen, onOpen, onClose } = useDisclosure()
 
 	useEffect(() => {
 		fetchData()
-	})
+	}, [])
 
-	const { isOpen, onOpen, onClose } = useDisclosure()
+	const selectHandler = (table: models.Table) => () => {
+		dispatch(setActiveTable(table))
+		navigate('/table')
+	}
 
 	return (
 		<>
@@ -24,7 +34,11 @@ export const CommonData: FC<Props> = () => {
 			</Button>
 			<List>
 				{tables?.length ? (
-					tables.map(t => <ListItem key={t.id}>{t.title}</ListItem>)
+					tables.map(t => (
+						<ListItem key={t.id} onClick={selectHandler(t)}>
+							{t.title}
+						</ListItem>
+					))
 				) : (
 					<p>Таблицы не созданы</p>
 				)}

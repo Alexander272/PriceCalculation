@@ -13,6 +13,8 @@ func NewCommonService(repo repo.Common) *CommonService {
 	return &CommonService{repo: repo}
 }
 
+// struct [][]{ value interface{} }
+
 func (s *CommonService) GetAll(table models.Table) ([]interface{}, error) {
 	data, err := s.repo.GetAll(table)
 	if err != nil {

@@ -22,7 +22,7 @@ func (r *CommonRepo) Get() (interface{}, error) {
 	return nil, fmt.Errorf("not implemented")
 }
 
-// TODO нужно передать название таблицы, колонки
+// * нужно передать название таблицы, колонки
 func (r *CommonRepo) GetAll(table models.Table) (data []interface{}, err error) {
 	columns := []string{}
 	for _, f := range table.Fields {
@@ -36,6 +36,28 @@ func (r *CommonRepo) GetAll(table models.Table) (data []interface{}, err error) 
 	}
 	return data, nil
 }
+
+// func (r *CommonRepo) GetAllNew(table models.Table) ([][]models.DataValue, error) {
+// 	columns := []string{}
+// 	for _, f := range table.Fields {
+// 		columns = append(columns, f.Title)
+// 	}
+
+// 	data := make([]interface{}, 0)
+// 	query := fmt.Sprintf("SELECT %s FROM %s", strings.Join(columns, ", "), table.Title)
+
+// 	if err := r.db.Select(&data, query); err != nil {
+// 		return nil, fmt.Errorf("не удалось получить данные. ошибка: %w", err)
+// 	}
+
+// 	values := make([][]models.DataValue, 0, len(data))
+// 	for _, v := range data {
+// 		row := make([]models.DataValue, 0)
+
+// 	}
+
+// 	return values, nil
+// }
 
 func (r *CommonRepo) Create(line models.Data) error {
 	columns := make([]string, 0, len(line.Data))

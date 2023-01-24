@@ -15,7 +15,7 @@ import {
 import { FC, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { models } from '@/../wailsjs/go/models'
-import { CreateTable } from '@/../wailsjs/go/root/App'
+import { CreateNewField, CreateTable } from '@/../wailsjs/go/root/App'
 import { Field, FieldsContainer, Icon, Number, Title } from './common.style'
 import { FieldsModal } from './FieldsModal'
 
@@ -43,6 +43,16 @@ export const AddCommonModal: FC<Props> = ({ isUpdate, isOpen, onClose, table }) 
 		onCloseField()
 	}
 
+	const saveFieldHandler = async (field: models.Field) => {
+		if (!table) return
+
+		field.typeDb = 'text'
+		field.tableId = table.id
+
+		await CreateNewField(field, table.titleDb)
+		onCloseField()
+	}
+
 	const saveTableHandler = async (table: models.Table) => {
 		console.log(table)
 		table.fields = fields
@@ -54,7 +64,12 @@ export const AddCommonModal: FC<Props> = ({ isUpdate, isOpen, onClose, table }) 
 
 	return (
 		<>
-			<FieldsModal isOpen={isOpenField} onClose={onCloseField} onSave={addFieldHandler} field={field} />
+			<FieldsModal
+				isOpen={isOpenField}
+				onClose={onCloseField}
+				onSave={isUpdate ? saveFieldHandler : addFieldHandler}
+				field={field}
+			/>
 			<Modal isOpen={isOpen} onClose={onClose}>
 				<ModalOverlay />
 				<ModalContent>
