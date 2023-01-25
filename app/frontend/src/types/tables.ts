@@ -1,5 +1,3 @@
-import ReactDataSheet from 'react-datasheet'
-
 export interface ITable {
 	id: string
 	title: string
@@ -23,6 +21,6 @@ export interface IField {
 	default: string
 }
 
-export interface IData extends ReactDataSheet.Cell<IData, string> {
+export interface IData {
 	value: any
 }

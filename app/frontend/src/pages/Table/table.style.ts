@@ -15,6 +15,7 @@ export const Header = styled.div`
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 20px;
+	padding: 0 20px;
 `
 
 export const Title = styled.h5`
