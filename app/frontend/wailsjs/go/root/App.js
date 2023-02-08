@@ -18,6 +18,10 @@ export function CreateTableData(arg1) {
   return window['go']['root']['App']['CreateTableData'](arg1);
 }
 
+export function CreateTableDataSeveral(arg1) {
+  return window['go']['root']['App']['CreateTableDataSeveral'](arg1);
+}
+
 export function DeleteField(arg1, arg2, arg3) {
   return window['go']['root']['App']['DeleteField'](arg1, arg2, arg3);
 }
@@ -32,6 +36,10 @@ export function DeleteTableData(arg1, arg2) {
 
 export function GetAllTableData(arg1) {
   return window['go']['root']['App']['GetAllTableData'](arg1);
+}
+
+export function GetAllTableDataNew(arg1) {
+  return window['go']['root']['App']['GetAllTableDataNew'](arg1);
 }
 
 export function GetAllTables() {

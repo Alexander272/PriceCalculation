@@ -21,7 +21,8 @@ type Field interface {
 }
 
 type Common interface {
-	GetAll(table models.Table) (data []interface{}, err error)
+	GetAll(table models.Table) (data [][]interface{}, err error)
+	GetAllNew(table models.Table) (list []models.DataLine, err error)
 	Create(line models.Data) error
 	Update(line models.Data) error
 	Delete(tableName string, id string) error

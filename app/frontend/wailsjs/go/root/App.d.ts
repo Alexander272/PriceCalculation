@@ -10,13 +10,17 @@ export function CreateTable(arg1:models.Table):Promise<Error>;
 
 export function CreateTableData(arg1:models.Data):Promise<Error>;
 
+export function CreateTableDataSeveral(arg1:models.NewData):Promise<Error>;
+
 export function DeleteField(arg1:string,arg2:string,arg3:string):Promise<Error>;
 
 export function DeleteTable(arg1:string,arg2:string):Promise<Error>;
 
 export function DeleteTableData(arg1:string,arg2:string):Promise<Error>;
 
-export function GetAllTableData(arg1:models.Table):Promise<Array<any>>;
+export function GetAllTableData(arg1:models.Table):Promise<Array<Array<any>>>;
+
+export function GetAllTableDataNew(arg1:models.Table):Promise<Array<models.DataLine>>;
 
 export function GetAllTables():Promise<Array<models.Table>>;
 

@@ -1,16 +1,26 @@
-import { Box, useDisclosure } from '@chakra-ui/react'
-import { useAppSelector } from '@/hooks/useStore'
+import { useDisclosure } from '@chakra-ui/react'
+import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
 import { AddCommonModal } from '@/components/AddCommonModal/AddCommonModal'
 import { VirtualTable } from '@/components/Table/Table'
 import SettingSVG from '@/assets/images/setting.svg'
 import { Container, Header, Setting, Title } from './table.style'
-import { MyTable } from '@/components/Table/MyTable'
+import { EditDataTable } from '@/components/Table/EditDataTable'
+import { useEffect } from 'react'
+import { fetchTableData } from '@/store/table'
 
 export default function DataTable() {
 	const table = useAppSelector(state => state.table.activeTable)
 	const data = useAppSelector(state => state.table.data)
+	const rows = useAppSelector(state => state.table.rows)
 
 	const { isOpen, onOpen, onClose } = useDisclosure()
+
+	const dispatch = useAppDispatch()
+
+	useEffect(() => {
+		console.log('fetch')
+		if (table) dispatch(fetchTableData(table))
+	}, [])
 
 	if (!table) return null
 	return (
@@ -24,7 +34,7 @@ export default function DataTable() {
 			</Header>
 
 			{/* <Box maxHeight={'400px'} overflow='auto'> */}
-			<MyTable headers={table.fields} data={data} />
+			<EditDataTable headers={table.fields} data={data} rows={rows} />
 			{/* <VirtualTable headers={table.fields} data={testData} /> */}
 			{/* </Box> */}
 

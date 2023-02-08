@@ -15,7 +15,7 @@ func NewCommonService(repo repo.Common) *CommonService {
 
 // struct [][]{ value interface{} }
 
-func (s *CommonService) GetAll(table models.Table) ([]interface{}, error) {
+func (s *CommonService) GetAll(table models.Table) ([][]interface{}, error) {
 	data, err := s.repo.GetAll(table)
 	if err != nil {
 		return nil, err
@@ -23,10 +23,22 @@ func (s *CommonService) GetAll(table models.Table) ([]interface{}, error) {
 	return data, nil
 }
 
+func (s *CommonService) GetAllNew(table models.Table) ([]models.DataLine, error) {
+	rows, err := s.repo.GetAllNew(table)
+	if err != nil {
+		return nil, err
+	}
+	return rows, nil
+}
+
 func (s *CommonService) Create(line models.Data) error {
 	if err := s.repo.Create(line); err != nil {
 		return err
 	}
+	return nil
+}
+
+func (s *CommonService) CreateSeveral(table models.NewData) error {
 	return nil
 }
 
