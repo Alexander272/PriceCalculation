@@ -1,8 +1,12 @@
 package services
 
 import (
+	"time"
+
 	"github.com/Alexander272/price_calculation/internal/repo"
 	"github.com/Alexander272/price_calculation/models"
+	"github.com/Alexander272/price_calculation/pkg/auth"
+	"github.com/Alexander272/price_calculation/pkg/hasher"
 	"github.com/google/uuid"
 )
 
@@ -43,10 +47,18 @@ type Services struct {
 	Params
 }
 
-func NewService(repo *repo.Repo) *Services {
-	fields := NewFieldsService(repo.Field)
-	tableList := NewTablesListService(repo.TablesList, fields)
-	common := NewCommonService(repo.Common)
+type Deps struct {
+	Repos           *repo.Repo
+	TokenManager    auth.TokenManager
+	Hasher          hasher.PasswordHasher
+	AccessTokenTTL  time.Duration
+	RefreshTokenTTL time.Duration
+}
+
+func NewServices(deps Deps) *Services {
+	fields := NewFieldsService(deps.Repos.Field)
+	tableList := NewTablesListService(deps.Repos.TablesList, fields)
+	common := NewCommonService(deps.Repos.Common)
 	params := NewParamsService()
 	calculation := NewCalculationService(params)
 

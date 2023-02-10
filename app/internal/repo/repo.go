@@ -3,6 +3,7 @@ package repo
 import (
 	"github.com/Alexander272/price_calculation/internal/repo/postgres"
 	"github.com/Alexander272/price_calculation/models"
+	"github.com/go-redis/redis/v8"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 )
@@ -34,7 +35,7 @@ type Repo struct {
 	Common
 }
 
-func NewRepo(db *sqlx.DB) *Repo {
+func NewRepo(db *sqlx.DB, client redis.Cmdable) *Repo {
 	return &Repo{
 		TablesList: postgres.NewTableListRepo(db),
 		Field:      postgres.NewFieldRepo(db),
