@@ -5,6 +5,7 @@ import (
 
 	"github.com/Alexander272/price_calculation/internal/configs"
 	"github.com/Alexander272/price_calculation/internal/services"
+	httpV1 "github.com/Alexander272/price_calculation/internal/transport/http/v1"
 	"github.com/Alexander272/price_calculation/pkg/limiter"
 	"github.com/gin-gonic/gin"
 )
@@ -35,9 +36,10 @@ func (h *Handler) Init(conf *configs.Config) *gin.Engine {
 }
 
 func (h *Handler) initAPI(router *gin.Engine, auth *configs.AuthConfig) {
-	// handlerV1 := httpV1.NewHandler(h.services, auth, middleware.NewMiddleware(h.services, auth))
-	// api := router.Group("/api")
-	// {
-	// 	handlerV1.Init(api)
-	// }
+	// , middleware.NewMiddleware(h.services, auth)
+	handlerV1 := httpV1.NewHandler(h.services, auth)
+	api := router.Group("/api")
+	{
+		handlerV1.Init(api)
+	}
 }

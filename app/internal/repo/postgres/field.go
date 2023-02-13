@@ -18,8 +18,8 @@ func NewFieldRepo(db *sqlx.DB) *FieldRepo {
 	return &FieldRepo{db: db}
 }
 
-func (r *FieldRepo) Create(field models.Field, tableName string) error {
-	create := fmt.Sprintf(`ALTER TABLE %s ADD %s %s`, tableName, field.Name, field.TypeDb)
+func (r *FieldRepo) Create(field models.FieldDTO) error {
+	create := fmt.Sprintf(`ALTER TABLE %s ADD %s %s`, field.TableName, field.Name, field.TypeDb)
 	if field.IsNotNull {
 		create += " NOT NULL"
 	}
@@ -69,14 +69,14 @@ func (r *FieldRepo) Update(field models.Field) error {
 	return errors.New("not implemented")
 }
 
-func (r *FieldRepo) Delete(id string, tableName, columnName string) error {
-	delete := fmt.Sprintf("ALTER TABLE %s DROP COLUMN %s", tableName, columnName)
+func (r *FieldRepo) Delete(field models.FieldDTO) error {
+	delete := fmt.Sprintf("ALTER TABLE %s DROP COLUMN %s", field.TableName, field.Name)
 	if _, err := r.db.Exec(delete); err != nil {
 		return fmt.Errorf("не удалось удалить колонку. ошибка: %w", err)
 	}
 
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", FieldsTable)
-	if _, err := r.db.Exec(query, id); err != nil {
+	if _, err := r.db.Exec(query, field.Id); err != nil {
 		return fmt.Errorf("не удалось удалить запись о колонке. ошибка: %w", err)
 	}
 	return nil

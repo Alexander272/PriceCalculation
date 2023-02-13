@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"strings"
 
 	"github.com/Alexander272/price_calculation/internal/repo"
@@ -21,7 +22,7 @@ func NewTablesListService(repo repo.TablesList, fields Fields) *TablesListServic
 	}
 }
 
-func (s *TablesListService) GetAll() ([]models.Table, error) {
+func (s *TablesListService) GetAll(ctx context.Context) ([]models.Table, error) {
 	tables, err := s.repo.GetAll()
 	if err != nil {
 		return nil, err
@@ -29,7 +30,7 @@ func (s *TablesListService) GetAll() ([]models.Table, error) {
 	return tables, nil
 }
 
-func (s *TablesListService) Create(table models.Table) error {
+func (s *TablesListService) Create(ctx context.Context, table models.Table) error {
 	id := uuid.New()
 	title := strings.ToLower(strings.ReplaceAll(table.Title, " ", "_"))
 	table.TitleDb = iuliia.Telegram.Translate(title)
@@ -43,14 +44,14 @@ func (s *TablesListService) Create(table models.Table) error {
 		return err
 	}
 
-	if err := s.fields.CreateSeveral(table.Fields, id); err != nil {
+	if err := s.fields.CreateSeveral(ctx, table.Fields, id); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (s *TablesListService) Delete(id string, table string) error {
+func (s *TablesListService) Delete(ctx context.Context, id string, table string) error {
 	if err := s.repo.Delete(id, table); err != nil {
 		return err
 	}

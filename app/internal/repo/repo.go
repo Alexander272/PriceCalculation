@@ -15,15 +15,14 @@ type TablesList interface {
 }
 
 type Field interface {
-	Create(models.Field, string) error
+	Create(models.FieldDTO) error
 	CreateSeveral([]models.Field, uuid.UUID) error
 	Update(models.Field) error
-	Delete(id string, tableName, columnName string) error
+	Delete(models.FieldDTO) error
 }
 
 type Common interface {
-	GetAll(table models.Table) (data [][]interface{}, err error)
-	GetAllNew(table models.Table) (list []models.DataLine, err error)
+	GetAll(table models.Table) (list []models.DataLine, err error)
 	Create(line models.Data) error
 	Update(line models.Data) error
 	Delete(tableName string, id string) error

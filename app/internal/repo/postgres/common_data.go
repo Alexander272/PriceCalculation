@@ -23,21 +23,7 @@ func (r *CommonRepo) Get() (interface{}, error) {
 }
 
 // * нужно передать название таблицы, колонки
-func (r *CommonRepo) GetAll(table models.Table) (data [][]interface{}, err error) {
-	columns := []string{}
-	for _, f := range table.Fields {
-		columns = append(columns, f.Name)
-	}
-
-	query := fmt.Sprintf("SELECT %s FROM %s", strings.Join(columns, ", "), table.TitleDb)
-
-	if err = r.db.Select(&data, query); err != nil {
-		return nil, fmt.Errorf("не удалось получить данные. ошибка: %w", err)
-	}
-	return data, nil
-}
-
-func (r *CommonRepo) GetAllNew(table models.Table) (list []models.DataLine, err error) {
+func (r *CommonRepo) GetAll(table models.Table) (list []models.DataLine, err error) {
 	columns := []string{"id::text"}
 	for _, f := range table.Fields {
 		columns = append(columns, f.Name)

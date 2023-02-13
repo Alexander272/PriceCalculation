@@ -19,18 +19,19 @@ import (
 	"github.com/Alexander272/price_calculation/pkg/database/redis"
 	"github.com/Alexander272/price_calculation/pkg/hasher"
 	"github.com/Alexander272/price_calculation/pkg/logger"
+	_ "github.com/lib/pq"
 	"github.com/subosito/gotenv"
 )
 
 func main() {
-	if err := gotenv.Load("../../.env"); err != nil {
+	if err := gotenv.Load("../.env"); err != nil {
 		logger.Fatalf("error loading env variables: %s", err.Error())
 	}
-	conf := &configs.Config{}
-	// conf, err := configs.Init("configs")
-	// if err != nil {
-	// 	logger.Fatalf("error initializing configs: %s", err.Error())
-	// }
+
+	conf, err := configs.Init("config")
+	if err != nil {
+		logger.Fatalf("error initializing configs: %s", err.Error())
+	}
 	logger.Init(os.Stdout, conf.Environment)
 
 	//* Dependencies
